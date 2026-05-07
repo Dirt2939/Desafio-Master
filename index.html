@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <!--
+    Estrutura principal do Playground JS.
+    Estilos ficam em css/style.css e comportamento fica em js/script.js.
+  -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARCADE JS</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="scanlines"></div>
+    <canvas id="cc-canvas"></canvas>
+
+    <svg class="cc-svg-sprite" width="0" height="0" aria-hidden="true" focusable="false">
+      <defs>
+        <radialGradient id="ccCoinFill" cx="36%" cy="28%" r="70%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="44%" stop-color="#eef4f7" />
+          <stop offset="100%" stop-color="#becbd4" />
+        </radialGradient>
+        <linearGradient
+          id="ccCoinRim"
+          x1="18"
+          y1="10"
+          x2="104"
+          y2="112"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="34%" stop-color="#d8e1e7" />
+          <stop offset="64%" stop-color="#f8fbfd" />
+          <stop offset="100%" stop-color="#aebbc5" />
+        </linearGradient>
+        <linearGradient
+          id="ccCrystal"
+          x1="42"
+          y1="18"
+          x2="78"
+          y2="72"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0%" stop-color="#d9fbff" />
+          <stop offset="45%" stop-color="#86e7f2" />
+          <stop offset="100%" stop-color="#4fb8d5" />
+        </linearGradient>
+        <symbol id="cc-face-cara" viewBox="0 0 120 120">
+          <g transform="matrix(.95 0 0 .95 -65.70 -30.40)">
+            <path
+              fill="#82919E"
+              d="M89.925446,114.161140 C85.718292,111.578033 87.350227,107.410797 87.575104,103.312950 C89.980812,102.343681 91.913330,101.815132 93.845856,101.286591 C93.900055,100.600922 93.954254,99.915245 94.008453,99.229576 C91.414948,98.519165 88.821449,97.808762 86.227943,97.098358 C86.326904,95.308983 86.425865,93.519608 86.521294,91.794014 C79.127563,89.591148 79.132996,89.593224 82.062836,81.909637 C84.255669,76.158867 86.822983,70.509453 88.449097,64.601738 C89.246994,61.702980 88.963791,58.085594 87.970184,55.207619 C86.221298,50.141994 87.167465,44.891918 91.734322,42.070034 C93.952003,40.699715 96.581894,39.155132 99.032677,39.142494 C112.978783,39.070564 126.940163,39.148079 140.869339,39.775032 C147.959396,40.094158 153.110291,44.341187 156.866409,50.392899 C157.753006,51.821354 159.954102,53.684227 161.193161,53.450760 C173.982925,51.040939 180.839920,57.940830 185.543579,69.033936 C185.317337,71.993484 185.194427,74.295540 185.071503,76.597588 C184.455368,88.135689 177.614136,94.302452 165.953537,93.470993 C155.000000,100.000000 145.000000,105.000000 140.996964,103.005127 C141.770462,104.054153 142.380325,104.520645 143.187256,105.190521 C143.591003,105.913025 143.797684,106.432144 143.570129,106.998703 C135.322128,107.143394 134.824234,107.786469 138.081055,114.761040 C139.325485,117.426010 141.179581,119.806305 142.872192,122.625900 C144.959747,125.687508 146.930939,128.439545 149.019806,131.486023 C150.531509,133.273254 151.925537,134.766022 153.376724,136.609863 C153.582520,137.658920 153.731140,138.356918 153.473877,139.057404 C150.118683,138.940338 146.904694,137.996033 144.265549,138.842957 C132.356110,142.664749 120.609451,146.993774 108.483276,151.144684 C107.735779,151.172897 107.309143,151.196457 106.882500,151.220001 C104.761215,150.032043 103.969124,148.830246 106.303413,146.879135 C110.028099,143.765823 113.577713,140.443054 117.556168,136.614182 C120.410469,129.466293 118.029366,123.632370 115.182159,117.580917 C114.855637,116.810921 114.581604,116.319405 114.259583,115.468384 C113.496101,112.326401 111.864319,111.852020 109.357201,112.999748 C103.046066,115.888901 96.509811,115.554733 89.925446,114.161140 M98.967239,67.748093 C96.501122,67.991661 94.035011,68.235222 91.568893,68.478790 C91.666031,69.341354 91.763168,70.203918 91.860306,71.066490 C95.926445,70.765297 99.992584,70.464104 104.058716,70.162918 C104.032310,69.568161 104.005905,68.973412 103.979500,68.378654 C102.566010,68.213364 101.152512,68.048073 98.967239,67.748093 M98.480255,72.925568 C97.418335,73.913956 96.291328,74.848282 95.371918,75.955048 C95.248665,76.103416 96.329201,77.713486 96.588898,77.645180 C98.647720,77.103722 100.642738,76.313672 102.657349,75.610138 C102.621338,75.144890 102.585320,74.679634 102.549301,74.214386 C101.450310,73.788956 100.351318,73.363525 98.480255,72.925568 z"
+            />
+
+            <path
+              fill="#8FC0DB"
+              d="M137.978653,79.981224 C138.057800,84.835129 134.784103,86.435562 130.808060,87.051468 C128.886230,87.349174 126.868225,87.026047 124.445412,86.928986 C123.004547,86.023857 122.012047,85.173759 120.905411,83.726082 C124.090332,81.611778 127.389381,80.095070 131.376404,78.262062 C129.551788,77.479935 127.782692,76.721603 125.956154,75.669014 C125.312614,74.387764 124.726509,73.400780 124.140396,72.413795 C123.549706,71.210304 122.959007,70.006813 122.454224,68.432693 C122.931709,67.935562 123.323280,67.809059 124.008545,67.864090 C125.561638,69.342636 126.821030,70.639656 128.184875,72.252815 C130.257217,74.368111 132.225098,76.167267 134.475555,78.096291 C135.831635,78.811180 136.905136,79.396202 137.978653,79.981224 z"
+            />
+            <path
+              fill="#81BAE9"
+              d="M128.080429,71.936676 C126.821030,70.639656 125.561638,69.342636 124.043694,67.596336 C123.804077,66.603889 123.823006,66.060715 123.841927,65.517548 C124.653358,63.414600 125.276291,61.212242 126.320557,59.232082 C127.876266,56.282120 129.849136,54.601246 132.602173,59.231869 C133.807648,64.922874 132.723038,69.141563 128.080429,71.936676 z"
+            />
+            <path
+              fill="#C0EFE3"
+              d="M123.642303,65.208282 C123.823006,66.060715 123.804077,66.603889 123.750000,67.414810 C123.323280,67.809059 122.931709,67.935562 122.246628,68.159790 C117.213982,67.561455 112.827171,66.365395 111.484169,60.862724 C110.673996,57.543217 112.068382,55.410992 115.166512,57.203190 C118.345413,59.042114 120.717491,62.275764 123.642303,65.208282 z"
+            />
+            <path
+              fill="#86D6F2"
+              d="M138.280975,79.804001 C136.905136,79.396202 135.831635,78.811180 134.446472,77.665550 C133.723801,72.205429 134.153168,67.633705 138.948166,64.764832 C139.720749,65.659019 140.493332,66.553207 141.431808,67.680573 C142.618713,72.339455 142.269485,76.412506 138.280975,79.804001 z"
+            />
+            <path
+              fill="#87D9F6"
+              d="M123.792389,72.206726 C124.726509,73.400780 125.312614,74.387764 125.653366,75.905106 C122.262962,76.949615 119.117905,77.463760 115.972847,77.977905 C114.422005,76.313690 112.871162,74.649467 111.320320,72.985245 C113.810951,72.182495 116.256531,71.062241 118.809662,70.700050 C120.263847,70.493759 121.893646,71.525444 123.792389,72.206726 z"
+            />
+          </g>
+        </symbol>
+        <symbol id="cc-face-coroa" viewBox="0 0 120 120">
+          <path fill="#90C6ED" d="M38,60 L38,35 L47,45 L60,20 L73,45 L82,35 L82,60 Z" />
+
+          <path fill="#5695EB" d="M44,60 L44,42 L51,51 L60,28 L69,51 L76,42 L76,60 Z" />
+
+          <path fill="#B8F2E6" d="M49,60 L49,49 L55,56 L60,40 L65,56 L71,49 L71,60 Z" />
+
+          <polygon fill="#90C6ED" points="60,11 63,14 60,17 57,14" />
+          <polygon fill="#90C6ED" points="38,26 40,28 38,30 36,28" />
+          <polygon fill="#90C6ED" points="82,26 84,28 82,30 80,28" />
+
+          <path
+            fill="#637281"
+            d="M22,60 C4,60 4,36 20,44 C26,47 26,52 22,50 C10,44 10,56 22,58 Z"
+          />
+
+          <path
+            fill="#637281"
+            d="M98,60 C116,60 116,36 100,44 C94,47 94,52 98,50 C110,44 110,56 98,58 Z"
+          />
+
+          <path fill="#637281" d="M22,58 L98,58 L98,62 L22,62 Z" />
+
+          <path fill="#7E8F9D" d="M30,62 Q60,100 90,62 Z" />
+
+          <path fill="#637281" d="M54,85 L66,85 L66,96 L54,96 Z" />
+
+          <path
+            fill="#7E8F9D"
+            d="M40,100 C40,96 46,96 54,96 L66,96 C74,96 80,96 80,100 L80,102 L40,102 Z"
+          />
+        </symbol>
+        <symbol id="cc-face-duo" viewBox="0 0 120 120">
+          <g transform="translate(-10 2) scale(.76)"><use href="#cc-face-cara" /></g>
+          <g transform="translate(42 18) scale(.72)"><use href="#cc-face-coroa" /></g>
+        </symbol>
+      </defs>
+    </svg>
+
+    <!-- Modal verificação de idade -->
+    <div id="age-modal" role="dialog" aria-modal="true">
+      <div id="age-box">
+        <div class="age-icon">🔞</div>
+        <h2>ACESSO RESTRITO</h2>
+        <p>
+          O Casino JS contém conteúdo voltado para maiores de idade.
+          <br />
+          Você tem 18 anos ou mais?
+        </p>
+        <div class="age-btns">
+          <button class="age-btn yes" id="age-yes">SIM, TENHO 18+</button>
+          <button class="age-btn no" id="age-no">NÃO</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mario-coin" aria-hidden="true">
+      <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="26" cy="26" r="24" fill="#f9e84d" stroke="#c88000" stroke-width="2.5" />
+        <circle cx="26" cy="26" r="18" fill="#ffd000" stroke="#a06000" stroke-width="1.5" />
+        <text
+          x="26"
+          y="33"
+          text-anchor="middle"
+          font-size="18"
+          font-family="monospace"
+          font-weight="900"
+          fill="#7a4800"
+        >
+          $
+        </text>
+      </svg>
+    </div>
+
+    <!-- =====================================================================
+     PLAYGROUND JS -- Tela inicial
+     ===================================================================== -->
+    <section id="hub" class="screen active">
+      <div id="hub-wrap">
+        <div class="hub-hero" id="hub-hero">
+          <h1 class="hub-title">PLAYGROUND JS</h1>
+          <p class="hub-sub">ESCOLHA SUA AVENTURA</p>
+        </div>
+
+        <div class="game-grid" id="pg-grid">
+          <!-- ARCADE JS -->
+          <div class="gcard gcard-jkp" id="pg-arcade" role="button" aria-label="Arcade JS">
+            <div class="gcard-inner">
+              <div class="gcard-glow"></div>
+              <div class="gcard-icon" style="color: var(--purple)">
+                <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect
+                    x="10"
+                    y="22"
+                    width="56"
+                    height="44"
+                    rx="8"
+                    fill="rgba(157,92,255,.1)"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  />
+                  <rect
+                    x="28"
+                    y="10"
+                    width="20"
+                    height="14"
+                    rx="4"
+                    fill="currentColor"
+                    opacity=".7"
+                  />
+                  <circle
+                    cx="22"
+                    cy="44"
+                    r="8"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    fill="none"
+                  />
+                  <rect x="19" y="41" width="6" height="2.5" rx="1.2" fill="currentColor" />
+                  <rect x="21" y="39" width="2.5" height="6" rx="1.2" fill="currentColor" />
+                  <rect x="46" y="41" width="5" height="2.5" rx="1.2" fill="currentColor" />
+                  <rect x="52" y="41" width="5" height="2.5" rx="1.2" fill="currentColor" />
+                  <rect
+                    x="22"
+                    y="58"
+                    width="8"
+                    height="5"
+                    rx="2.5"
+                    fill="currentColor"
+                    opacity=".6"
+                  />
+                  <rect
+                    x="34"
+                    y="58"
+                    width="8"
+                    height="5"
+                    rx="2.5"
+                    fill="currentColor"
+                    opacity=".6"
+                  />
+                  <rect
+                    x="46"
+                    y="58"
+                    width="8"
+                    height="5"
+                    rx="2.5"
+                    fill="currentColor"
+                    opacity=".6"
+                  />
+                </svg>
+              </div>
+              <div class="gcard-name">ARCADE JS</div>
+              <div class="gcard-desc">
+                Jokenpo, Dados e
+                <br />
+                Cara ou Coroa!
+              </div>
+              <div class="gcard-cta">ENTRAR</div>
+            </div>
+          </div>
+
+          <!-- CASINO JS -->
+          <div
+            class="gcard"
+            id="pg-casino"
+            role="button"
+            aria-label="Casino JS"
+            style="border-color: rgba(255, 140, 0, 0.3)"
+          >
+            <div class="gcard-inner" style="border-color: rgba(255, 140, 0, 0.35)">
+              <div
+                class="gcard-glow"
+                style="
+                  background: radial-gradient(
+                    ellipse at 50% 0%,
+                    rgba(255, 140, 0, 0.14),
+                    transparent 70%
+                  );
+                "
+              ></div>
+              <div class="gcard-icon" style="color: var(--orange)">
+                <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle
+                    cx="38"
+                    cy="38"
+                    r="32"
+                    fill="rgba(255,140,0,.08)"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  />
+                  <circle
+                    cx="38"
+                    cy="38"
+                    r="24"
+                    stroke="currentColor"
+                    stroke-width="1"
+                    opacity=".3"
+                  />
+                  <text
+                    x="38"
+                    y="48"
+                    text-anchor="middle"
+                    font-family="monospace"
+                    font-size="24"
+                    font-weight="900"
+                    fill="currentColor"
+                  >
+                    $
+                  </text>
+                  <circle cx="18" cy="20" r="5" fill="currentColor" opacity=".6" />
+                  <circle cx="58" cy="20" r="5" fill="currentColor" opacity=".6" />
+                  <circle cx="18" cy="56" r="5" fill="currentColor" opacity=".6" />
+                  <circle cx="58" cy="56" r="5" fill="currentColor" opacity=".6" />
+                </svg>
+              </div>
+              <div class="gcard-name" style="color: var(--orange)">CASINO JS</div>
+              <div class="gcard-desc">
+                Slots, Roleta
+                <br />
+                e Crash Game!
+              </div>
+              <div class="gcard-cta" style="border-color: var(--orange); color: var(--orange)">
+                ENTRAR
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /pg-grid -->
+
+        <div class="kb-hint-hub" style="display: flex; margin-top: 16px">
+          <span class="key">&larr;</span>
+          <span class="key">&rarr;</span>
+          navegar &nbsp;|&nbsp;
+          <span class="key">ENTER</span>
+          selecionar
+        </div>
+      </div>
+      <!-- /hub-wrap -->
+    </section>
+
+    <!-- =====================================================================
+     ARCADE HUB -- Insert Coin + Jogos
+     ===================================================================== -->
+    <section id="arcade-hub" class="screen">
+      <div class="arcade-wrap">
+        <div class="hub-hero" id="arc-hero">
+          <h1 class="hub-title">ARCADE JS</h1>
+          <p class="hub-sub">SELECT YOUR GAME</p>
+          <div class="hub-coin-btn" id="btn-coin" role="button" aria-label="Inserir moeda">
+            INSERT COIN TO PLAY
+          </div>
+          <div class="kb-hint-hub" id="hub-hint" aria-live="polite">
+            <span class="key">&larr;</span>
+            <span class="key">&rarr;</span>
+            navegar &nbsp;|&nbsp;
+            <span class="key">ENTER</span>
+            selecionar
+          </div>
+        </div>
+
+        <div class="game-grid" id="game-grid">
+          <!-- JOKENPO -->
+          <div class="gcard gcard-jkp" data-goto="jokenpo" aria-label="Jokenpo">
+            <div class="gcard-inner">
+              <div class="gcard-glow"></div>
+              <div class="gcard-icon" style="color: var(--purple)">
+                <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle
+                    cx="38"
+                    cy="38"
+                    r="33"
+                    fill="rgba(157,92,255,.08)"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                  />
+                  <path
+                    d="M13 48 L21 33 L34 27 L45 33 L51 47 L43 58 H24 Z"
+                    fill="currentColor"
+                    opacity=".78"
+                  />
+                  <path
+                    d="M23 35 L31 44 M39 34 L33 48"
+                    stroke="rgba(5,3,14,.45)"
+                    stroke-width="2.3"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M45 18 H61 L66 23 V50 H45 Z"
+                    fill="rgba(157,92,255,.18)"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                  />
+                  <path d="M60 18 V24 H66" stroke="currentColor" stroke-width="2.2" />
+                  <path
+                    d="M50 33 H61 M50 40 H59"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                  <circle cx="23" cy="20" r="5" stroke="currentColor" stroke-width="2.2" />
+                  <circle cx="34" cy="20" r="5" stroke="currentColor" stroke-width="2.2" />
+                  <path
+                    d="M27 24 L19 40 M31 24 L40 40"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <div class="gcard-name">JOKENPO</div>
+              <div class="gcard-desc">
+                Pedra, Papel ou
+                <br />
+                Tesoura?
+              </div>
+              <div class="gcard-cta">JOGAR</div>
+            </div>
+          </div>
+
+          <!-- DADOS -->
+          <div class="gcard gcard-dados" data-goto="dados" aria-label="Dados">
+            <div class="gcard-inner">
+              <div class="gcard-glow"></div>
+              <div class="gcard-icon" style="color: var(--yellow)">
+                <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect
+                    x="10"
+                    y="10"
+                    width="56"
+                    height="56"
+                    rx="13"
+                    fill="rgba(249,232,77,.1)"
+                    stroke="currentColor"
+                    stroke-width="2.8"
+                  />
+                  <circle cx="26" cy="26" r="5.5" fill="currentColor" />
+                  <circle cx="50" cy="26" r="5.5" fill="currentColor" />
+                  <circle cx="26" cy="38" r="5.5" fill="currentColor" />
+                  <circle cx="50" cy="38" r="5.5" fill="currentColor" />
+                  <circle cx="26" cy="50" r="5.5" fill="currentColor" />
+                  <circle cx="50" cy="50" r="5.5" fill="currentColor" />
+                </svg>
+              </div>
+              <div class="gcard-name">
+                BATALHA DE
+                <br />
+                DADOS
+              </div>
+              <div class="gcard-desc">
+                Maior numero
+                <br />
+                vence!
+              </div>
+              <div class="gcard-cta">JOGAR</div>
+            </div>
+          </div>
+
+          <!-- CARA OU COROA -->
+          <div class="gcard gcard-coin" data-goto="caraCoroa" aria-label="Cara ou Coroa">
+            <div class="gcard-inner">
+              <div class="gcard-glow"></div>
+              <div class="gcard-icon" style="color: var(--cyan)">
+                <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle
+                    cx="31"
+                    cy="38"
+                    r="25"
+                    fill="rgba(0,245,196,.08)"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                  />
+                  <circle
+                    cx="31"
+                    cy="38"
+                    r="18"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    opacity=".35"
+                  />
+                  <circle cx="25" cy="34" r="2.5" fill="currentColor" />
+                  <circle cx="37" cy="34" r="2.5" fill="currentColor" />
+                  <path
+                    d="M24 43 Q31 49 38 43"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                  />
+                  <circle
+                    cx="48"
+                    cy="38"
+                    r="25"
+                    fill="rgba(0,245,196,.06)"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    opacity=".72"
+                  />
+                  <path
+                    d="M35 49 H61 L57 35 L52 41 L48 29 L44 41 L39 35 Z"
+                    fill="currentColor"
+                    opacity=".78"
+                  />
+                  <rect
+                    x="37"
+                    y="49"
+                    width="22"
+                    height="5"
+                    rx="2.5"
+                    fill="currentColor"
+                    opacity=".9"
+                  />
+                  <circle cx="48" cy="29" r="2.4" fill="currentColor" />
+                </svg>
+                <svg
+                  class="cc-choice-art"
+                  viewBox="0 0 120 120"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <use href="#cc-face-duo"></use>
+                  <circle
+                    cx="28"
+                    cy="38"
+                    r="24"
+                    fill="rgba(0,245,196,.06)"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                  />
+                  <path
+                    d="M21 29 C19 23 23 18 31 17 C40 16 47 22 47 30 C47 38 42 42 37 43 L37 50 L44 57 H19 L26 50 L26 45 C21 43 18 39 18 34 C18 31 19 29 21 29Z"
+                    fill="currentColor"
+                    opacity=".55"
+                  />
+                  <path
+                    d="M36 32 C42 26 48 25 54 27"
+                    stroke="#86e7ee"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                  />
+                  <ellipse
+                    cx="43"
+                    cy="27"
+                    rx="4"
+                    ry="2.2"
+                    fill="#86e7ee"
+                    transform="rotate(25 43 27)"
+                  />
+                  <ellipse
+                    cx="50"
+                    cy="34"
+                    rx="4"
+                    ry="2.2"
+                    fill="#86e7ee"
+                    transform="rotate(25 50 34)"
+                  />
+                  <circle
+                    cx="49"
+                    cy="40"
+                    r="24"
+                    fill="rgba(0,245,196,.04)"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    opacity=".8"
+                  />
+                  <path
+                    d="M35 47 C37 36 43 30 50 30 C57 30 63 36 65 47 C60 51 40 51 35 47Z"
+                    fill="currentColor"
+                    opacity=".55"
+                  />
+                  <path d="M50 19 L58 34 L53 48 H47 L42 34 Z" fill="#9deeff" />
+                  <path d="M50 19 L53 48 L47 48 Z" fill="#d6fbff" />
+                </svg>
+              </div>
+              <div class="gcard-name">
+                CARA OU
+                <br />
+                COROA
+              </div>
+              <div class="gcard-desc">
+                50% de chance &mdash;
+                <br />
+                escolha o lado!
+              </div>
+              <div class="gcard-cta">JOGAR</div>
+            </div>
+          </div>
+        </div>
+        <!-- /game-grid -->
+      </div>
+    </section>
+
+    <!-- =====================================================================
+     JOKENPÔ
+     ===================================================================== -->
+    <section id="jokenpo" class="screen">
+      <nav class="nav">
+        <div class="nav-back" id="jkp-back" role="button">
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M10.5 3L5.5 8l5 5" />
+          </svg>
+          VOLTAR
+        </div>
+        <span class="nav-logo">JOKENPÔ</span>
+        <div class="spacer"></div>
+        <div class="score-badge">
+          <div class="score-pill win">
+            <span class="lbl">WIN</span>
+            <span class="val" id="jw">0</span>
+          </div>
+          <div class="score-pill lose">
+            <span class="lbl">LOSE</span>
+            <span class="val" id="jl">0</span>
+          </div>
+          <div class="score-pill draw">
+            <span class="lbl">DRAW</span>
+            <span class="val" id="jd">0</span>
+          </div>
+        </div>
+      </nav>
+
+      <div class="jkp-arena">
+        <p class="game-sub">— Escolha sua jogada —</p>
+        <div class="kb-hint-game">
+          <span class="key">←</span>
+          <span class="key">→</span>
+          escolher &nbsp;|&nbsp;
+          <span class="key">ENTER</span>
+          confirmar &nbsp;|&nbsp;
+          <span class="key">ESC</span>
+          voltar
+        </div>
+
+        <div class="jkp-cards" id="jkp-cards">
+          <!-- PEDRA: punho fechado – outline neon -->
+          <div class="jkp-card" data-jkp="pedra" aria-label="Pedra">
+            <div class="jkp-card-icon">
+              <!-- PEDRA: punho fechado sólido -->
+              <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Nós dos dedos -->
+                <path
+                  d="M9 38 L15 25 L27 15 L42 18 L52 31 L47 45 L34 53 L18 49 Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M17 28 L28 34 M36 20 L31 33 M43 33 L33 45"
+                  stroke="rgba(5,3,14,.42)"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M15 25 L27 15 L42 18"
+                  stroke="rgba(255,255,255,.22)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+            <span class="jkp-lbl">PEDRA</span>
+          </div>
+
+          <!-- TESOURA: sinal de paz / V – outline neon -->
+          <div class="jkp-card" data-jkp="tesoura" aria-label="Tesoura">
+            <div class="jkp-card-icon">
+              <!-- TESOURA: dedo indicador + médio em V, demais dobrados -->
+              <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Palma base -->
+                <circle cx="19" cy="43" r="8" stroke="currentColor" stroke-width="4" />
+                <circle cx="41" cy="43" r="8" stroke="currentColor" stroke-width="4" />
+                <path
+                  d="M25 38 L49 13 M35 38 L11 13"
+                  stroke="currentColor"
+                  stroke-width="5"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M30 35 L30 47"
+                  stroke="currentColor"
+                  stroke-width="4"
+                  stroke-linecap="round"
+                />
+                <!-- Indicador (esquerdo do V) -->
+                <!-- Médio (direito do V) -->
+                <!-- Anelar dobrado (pequeno) -->
+                <!-- Mínimo dobrado -->
+                <!-- Polegar -->
+                <!-- Separação em V entre indicador e médio -->
+              </svg>
+            </div>
+            <span class="jkp-lbl">TESOURA</span>
+          </div>
+
+          <!-- PAPEL: mão aberta, todos os dedos – outline neon -->
+          <div class="jkp-card" data-jkp="papel" aria-label="Papel">
+            <div class="jkp-card-icon">
+              <!-- PAPEL: mão aberta plana com todos os dedos estendidos -->
+              <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Palma -->
+                <path
+                  d="M16 7 H39 L50 18 V53 H16 Z"
+                  fill="rgba(157,92,255,.16)"
+                  stroke="currentColor"
+                  stroke-width="3"
+                />
+                <path d="M39 7 V19 H50" stroke="currentColor" stroke-width="3" />
+                <path
+                  d="M23 29 H42 M23 37 H42 M23 45 H35"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                />
+                <!-- Mínimo -->
+                <!-- Anelar -->
+                <!-- Médio -->
+                <!-- Indicador -->
+                <!-- Polegar -->
+                <!-- Linha da palma -->
+              </svg>
+            </div>
+            <span class="jkp-lbl">PAPEL</span>
+          </div>
+        </div>
+
+        <!-- Painel VS -->
+        <div class="jkp-vs-panel">
+          <div class="jkp-vs-side player">
+            <span class="jkp-vs-lbl">VOCÊ</span>
+            <div class="jkp-vs-ch" id="jkp-pc">
+              <svg viewBox="0 0 60 60" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <text
+                  x="30"
+                  y="42"
+                  text-anchor="middle"
+                  font-size="32"
+                  font-family="monospace"
+                  opacity=".28"
+                >
+                  ?
+                </text>
+              </svg>
+            </div>
+          </div>
+          <div class="jkp-vs-div">VS</div>
+          <div class="jkp-vs-side">
+            <span class="jkp-vs-lbl">CPU</span>
+            <div class="jkp-vs-ch" id="jkp-ic">
+              <svg viewBox="0 0 60 60" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <text
+                  x="30"
+                  y="42"
+                  text-anchor="middle"
+                  font-size="32"
+                  font-family="monospace"
+                  opacity=".28"
+                >
+                  ?
+                </text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-box idle" id="jkp-result">Faça sua escolha acima</div>
+        <div class="btn-arc btn-jkp" id="jkp-new" role="button" style="display: none">
+          NOVA RODADA
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+     DADOS
+     ===================================================================== -->
+    <section id="dados" class="screen">
+      <nav class="nav">
+        <div class="nav-back" id="dados-back" role="button">
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M10.5 3L5.5 8l5 5" />
+          </svg>
+          VOLTAR
+        </div>
+        <span class="nav-logo">DADOS</span>
+        <div class="spacer"></div>
+        <div class="score-badge">
+          <div class="score-pill win">
+            <span class="lbl">WIN</span>
+            <span class="val" id="dw">0</span>
+          </div>
+          <div class="score-pill lose">
+            <span class="lbl">LOSE</span>
+            <span class="val" id="dl">0</span>
+          </div>
+          <div class="score-pill draw">
+            <span class="lbl">DRAW</span>
+            <span class="val" id="dd">0</span>
+          </div>
+        </div>
+      </nav>
+
+      <div class="dados-arena">
+        <p class="game-sub">— Lance os dados e vença —</p>
+        <div class="dados-stats">
+          <div>
+            <span>RODADAS</span>
+            <strong id="dr">0</strong>
+          </div>
+          <div>
+            <span>PLACAR</span>
+            <strong id="ds">0 : 0</strong>
+          </div>
+        </div>
+        <div class="dados-field">
+          <div class="dado-side">
+            <div class="dado-lbl">JOGADOR</div>
+            <div class="dado-face" id="df-p">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+            <div class="dado-num p" id="dn-p">-</div>
+          </div>
+          <span class="dados-vs">VS</span>
+          <div class="dado-side">
+            <div class="dado-lbl">CPU</div>
+            <div class="dado-face" id="df-i">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+            <div class="dado-num ia" id="dn-i">-</div>
+          </div>
+        </div>
+        <div class="kb-hint-game">
+          <span class="key">ENTER</span>
+          lançar &nbsp;|&nbsp;
+          <span class="key">ESC</span>
+          voltar
+        </div>
+        <div class="result-box idle" id="dados-res">Pressione ENTER para lançar!</div>
+        <div class="btn-arc btn-dice kb-focus" id="btn-dados" role="button">LANÇAR DADOS</div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+     CARA OU COROA
+     ===================================================================== -->
+    <section id="caraCoroa" class="screen">
+      <nav class="nav">
+        <div class="nav-back" id="cc-back" role="button">
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M10.5 3L5.5 8l5 5" />
+          </svg>
+          VOLTAR
+        </div>
+        <span class="nav-logo">CARA OU COROA</span>
+        <div class="spacer"></div>
+        <div class="score-badge">
+          <div class="score-pill win">
+            <span class="lbl">WIN</span>
+            <span class="val" id="cw">0</span>
+          </div>
+          <div class="score-pill lose">
+            <span class="lbl">LOSE</span>
+            <span class="val" id="cl">0</span>
+          </div>
+        </div>
+      </nav>
+
+      <div class="cc-arena">
+        <p class="game-sub">— Escolha um lado —</p>
+
+        <div class="coin-stage">
+          <div class="coin3d" id="coin3d">
+            <!-- CARA — "1 REAL" lado monetário -->
+            <div class="coin-face coin-cara">
+              <svg
+                class="coin-face-img"
+                viewBox="0 0 90 90"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <!-- Inner border ring -->
+                <circle cx="45" cy="45" r="33" stroke="rgba(80,45,0,.28)" stroke-width="1.8" />
+                <!-- Dot stars at radius 30 (12 posições) -->
+                <circle cx="75" cy="45" r="2.2" fill="rgba(80,45,0,.55)" />
+                <circle cx="71" cy="60" r="2.2" fill="rgba(80,45,0,.55)" />
+                <circle cx="60" cy="71" r="2.2" fill="rgba(80,45,0,.55)" />
+                <circle cx="45" cy="75" r="2.2" fill="rgba(80,45,0,.55)" />
+                <circle cx="30" cy="71" r="2.2" fill="rgba(80,45,0,.55)" />
+                <circle cx="19" cy="60" r="2.2" fill="rgba(80,45,0,.55)" />
+                <circle cx="15" cy="45" r="2.2" fill="rgba(80,45,0,.55)" />
+                <circle cx="19" cy="30" r="2.2" fill="rgba(80,45,0,.55)" />
+                <circle cx="30" cy="19" r="2.2" fill="rgba(80,45,0,.55)" />
+                <circle cx="45" cy="15" r="2.2" fill="rgba(80,45,0,.55)" />
+                <circle cx="60" cy="19" r="2.2" fill="rgba(80,45,0,.55)" />
+                <circle cx="71" cy="30" r="2.2" fill="rgba(80,45,0,.55)" />
+                <!-- Decorative lines -->
+                <line x1="24" y1="38" x2="66" y2="38" stroke="rgba(80,45,0,.18)" stroke-width="1" />
+                <!-- Large "1" -->
+                <text
+                  x="45"
+                  y="58"
+                  text-anchor="middle"
+                  font-family="Georgia,Times New Roman,serif"
+                  font-size="32"
+                  font-weight="bold"
+                  fill="rgba(80,45,0,.75)"
+                >
+                  1
+                </text>
+                <!-- "REAL" -->
+                <text
+                  x="45"
+                  y="71"
+                  text-anchor="middle"
+                  font-family="Georgia,Times New Roman,serif"
+                  font-size="8.5"
+                  letter-spacing="3.5"
+                  fill="rgba(80,45,0,.65)"
+                >
+                  REAL
+                </text>
+                <!-- Top shine -->
+                <path
+                  d="M 26 22 Q 45 14 64 22"
+                  stroke="rgba(255,255,255,.42)"
+                  stroke-width="2.2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <circle cx="45" cy="45" r="36" fill="#f9e84d" />
+                <circle cx="45" cy="45" r="34" stroke="rgba(80,45,0,.28)" stroke-width="2" />
+                <circle
+                  cx="45"
+                  cy="45"
+                  r="25"
+                  fill="rgba(80,45,0,.08)"
+                  stroke="rgba(80,45,0,.18)"
+                  stroke-width="1.5"
+                />
+                <circle cx="35" cy="39" r="4" fill="rgba(80,45,0,.72)" />
+                <circle cx="55" cy="39" r="4" fill="rgba(80,45,0,.72)" />
+                <path
+                  d="M33 54 Q45 65 57 54"
+                  stroke="rgba(80,45,0,.72)"
+                  stroke-width="4"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M27 23 Q45 14 63 23"
+                  stroke="rgba(255,255,255,.42)"
+                  stroke-width="2.2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <text
+                  x="45"
+                  y="80"
+                  text-anchor="middle"
+                  font-family="Georgia,Times New Roman,serif"
+                  font-size="8"
+                  letter-spacing="3"
+                  fill="rgba(80,45,0,.66)"
+                >
+                  CARA
+                </text>
+              </svg>
+              <svg
+                class="coin-face-img coin-art-current"
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <use href="#cc-face-cara"></use>
+              </svg>
+              <div class="coin-lbl">CARA</div>
+            </div>
+
+            <!-- COROA — rosto da república lado anverso -->
+            <div class="coin-face coin-coroa">
+              <svg
+                class="coin-face-img"
+                viewBox="0 0 90 90"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <!-- Inner border ring -->
+                <circle cx="45" cy="45" r="33" stroke="rgba(50,50,60,.24)" stroke-width="1.8" />
+                <!-- Perfil feminino – cabeça voltada à direita -->
+                <!-- Cabelo / silhueta traseira -->
+                <path
+                  d="M 30 26 Q 28 16 38 11 Q 50 7 60 14 Q 68 20 66 32 Q 64 42 60 50 Q 56 58 52 64 L 48 72"
+                  fill="rgba(50,50,60,.52)"
+                />
+                <!-- Face frontal / perfil -->
+                <path
+                  d="M 38 11 Q 32 14 30 22 Q 28 30 30 38 Q 32 46 36 52 Q 40 58 46 62 L 48 72"
+                  fill="rgba(50,50,60,.48)"
+                />
+                <!-- Pescoço -->
+                <rect x="41" y="68" width="12" height="12" rx="4" fill="rgba(50,50,60,.45)" />
+                <!-- Nariz projetado (perfil) -->
+                <path d="M 66 34 Q 70 36 69 41 Q 68 46 64 47" fill="rgba(50,50,60,.35)" />
+                <!-- Ramo de louro (esquerda) -->
+                <path
+                  d="M 24 30 Q 16 30 14 37"
+                  stroke="rgba(50,50,60,.42)"
+                  stroke-width="2.2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 17 34 Q 13 40 14 47"
+                  stroke="rgba(50,50,60,.38)"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 14 44 Q 13 50 16 55"
+                  stroke="rgba(50,50,60,.34)"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <!-- Folhinhas no ramo -->
+                <ellipse
+                  cx="17"
+                  cy="32"
+                  rx="4"
+                  ry="2.5"
+                  fill="rgba(50,50,60,.35)"
+                  transform="rotate(-20 17 32)"
+                />
+                <ellipse
+                  cx="14"
+                  cy="43"
+                  rx="4"
+                  ry="2.5"
+                  fill="rgba(50,50,60,.32)"
+                  transform="rotate(-10 14 43)"
+                />
+                <!-- "BRASIL" -->
+                <text
+                  x="45"
+                  y="84"
+                  text-anchor="middle"
+                  font-family="Georgia,Times New Roman,serif"
+                  font-size="7.5"
+                  letter-spacing="3"
+                  fill="rgba(50,50,60,.68)"
+                >
+                  BRASIL
+                </text>
+                <!-- Top shine -->
+                <path
+                  d="M 26 20 Q 45 12 64 20"
+                  stroke="rgba(255,255,255,.44)"
+                  stroke-width="2.2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <circle cx="45" cy="45" r="36" fill="#e8e8e8" />
+                <circle cx="45" cy="45" r="34" stroke="rgba(50,50,60,.24)" stroke-width="2" />
+                <path
+                  d="M22 56 H68 L64 37 L56 46 L45 25 L34 46 L26 37 Z"
+                  fill="rgba(50,50,60,.6)"
+                />
+                <rect x="27" y="56" width="36" height="9" rx="4.5" fill="rgba(50,50,60,.58)" />
+                <circle cx="45" cy="25" r="4" fill="rgba(50,50,60,.72)" />
+                <circle cx="26" cy="37" r="3" fill="rgba(50,50,60,.62)" />
+                <circle cx="64" cy="37" r="3" fill="rgba(50,50,60,.62)" />
+                <path
+                  d="M27 22 Q45 13 63 22"
+                  stroke="rgba(255,255,255,.44)"
+                  stroke-width="2.2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <text
+                  x="45"
+                  y="80"
+                  text-anchor="middle"
+                  font-family="Georgia,Times New Roman,serif"
+                  font-size="8"
+                  letter-spacing="3"
+                  fill="rgba(50,50,60,.68)"
+                >
+                  COROA
+                </text>
+              </svg>
+              <svg
+                class="coin-face-img coin-art-current"
+                viewBox="0 0 120 120"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <use href="#cc-face-coroa"></use>
+              </svg>
+              <div class="coin-lbl">COROA</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões -->
+        <div class="cc-btns">
+          <!-- Botão CARA -->
+          <div class="cc-btn cara-btn" id="btn-cara" role="button" aria-label="Cara">
+            <!-- CARA: moeda dourada com "1" -->
+            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Moeda -->
+              <circle
+                cx="22"
+                cy="22"
+                r="20"
+                fill="currentColor"
+                opacity=".15"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <circle cx="22" cy="22" r="15" stroke="currentColor" stroke-width="1" opacity=".35" />
+              <!-- Brilho superior -->
+              <path
+                d="M12 12 Q22 7 32 12"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                opacity=".5"
+                fill="none"
+              />
+              <!-- Número 1 central -->
+              <circle cx="17" cy="20" r="2" fill="currentColor" />
+              <circle cx="27" cy="20" r="2" fill="currentColor" />
+              <path
+                d="M16 27 Q22 32 28 27"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <!-- Detalhe inferior -->
+            </svg>
+            <svg
+              class="cc-choice-art"
+              viewBox="0 0 120 120"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <use href="#cc-face-cara"></use>
+            </svg>
+            CARA
+          </div>
+
+          <!-- Botão COROA -->
+          <div class="cc-btn coroa-btn" id="btn-coroa" role="button" aria-label="Coroa">
+            <!-- COROA: coroa clássica com pontas e faixa base -->
+            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Fundo circular -->
+              <circle
+                cx="22"
+                cy="22"
+                r="20"
+                fill="currentColor"
+                opacity=".12"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <!-- Faixa base da coroa -->
+              <rect x="8" y="31" width="28" height="7" rx="3" fill="currentColor" opacity=".85" />
+              <!-- Corpo da coroa -->
+              <path
+                d="M8 31 L8 20 L14 26 L22 11 L30 26 L36 20 L36 31 Z"
+                fill="currentColor"
+                opacity=".8"
+              />
+              <!-- Gemas nas pontas -->
+              <circle cx="22" cy="11" r="3" fill="currentColor" />
+              <circle cx="8" cy="20" r="2.5" fill="currentColor" opacity=".75" />
+              <circle cx="36" cy="20" r="2.5" fill="currentColor" opacity=".75" />
+              <!-- Gema central no corpo -->
+              <circle cx="22" cy="26" r="3" fill="rgba(5,3,14,.5)" />
+              <circle cx="22" cy="26" r="1.5" fill="currentColor" opacity=".6" />
+            </svg>
+            <svg
+              class="cc-choice-art"
+              viewBox="0 0 120 120"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <use href="#cc-face-coroa"></use>
+            </svg>
+            COROA
+          </div>
+        </div>
+
+        <div class="kb-hint-game">
+          <span class="key">←</span>
+          <span class="key">→</span>
+          escolher &nbsp;|&nbsp;
+          <span class="key">ENTER</span>
+          confirmar &nbsp;|&nbsp;
+          <span class="key">ESC</span>
+          voltar
+        </div>
+
+        <div class="result-box idle" id="cc-result">Escolha CARA ou COROA acima</div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+     CASINO JS — HUB
+     ===================================================================== -->
+    <section id="casino" class="screen">
+      <div class="casino-wrap">
+        <div class="casino-hero" id="casino-hero">
+          <h1 class="casino-logo">CASINO JS</h1>
+          <p class="casino-tagline">JOGUE COM RESPONSABILIDADE</p>
+          <div class="casino-balance-disp">
+            <span class="lbl">SALDO</span>
+            <span id="casino-bal-hero">$500</span>
+          </div>
+        </div>
+        <nav class="casino-nav">
+          <div class="nav-back" id="casino-back" role="button">
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <path d="M10.5 3L5.5 8l5 5" />
+            </svg>
+            VOLTAR
+          </div>
+          <div class="spacer"></div>
+        </nav>
+        <div class="casino-ticket-panel" id="casino-ticket-panel">
+          <div class="ticket-card">
+            <div class="ticket-icon" aria-hidden="true">
+              <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M13 24 Q13 18 19 18 H57 Q63 18 63 24 V31 Q57 31 57 38 Q57 45 63 45 V52 Q63 58 57 58 H19 Q13 58 13 52 V45 Q19 45 19 38 Q19 31 13 31 V24Z"
+                  fill="rgba(255,140,0,.1)"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                />
+                <path
+                  d="M28 18 V58"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-dasharray="4 4"
+                  opacity=".45"
+                />
+                <path
+                  d="M36 31 H52 M36 38 H50 M36 45 H46"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                />
+                <circle cx="22" cy="38" r="3" fill="currentColor" opacity=".75" />
+              </svg>
+            </div>
+            <div class="ticket-label">INSIRA O TICKET</div>
+            <div class="ticket-sub">ACESSO CASINO JS</div>
+            <div
+              class="hub-coin-btn hub-ticket-btn"
+              id="btn-ticket"
+              role="button"
+              aria-label="Inserir ticket"
+            >
+              INSERT TICKET
+            </div>
+          </div>
+        </div>
+        <div class="kb-hint-hub casino-hint show" id="casino-hint" aria-live="polite">
+          <span class="key">ENTER</span>
+          inserir ticket &nbsp;|&nbsp;
+          <span class="key">ESC</span>
+          voltar
+        </div>
+        <div class="casino-grid hidden" id="casino-game-grid">
+          <!-- CAÇA-NÍQUEL -->
+          <div class="ccard ccard-slots" data-goto="slots" aria-label="Caça-Níquel">
+            <div class="ccard-inner">
+              <div class="ccard-glow"></div>
+              <div class="ccard-icon" style="color: var(--orange)">
+                <svg viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect
+                    x="6"
+                    y="14"
+                    width="58"
+                    height="46"
+                    rx="8"
+                    fill="rgba(255,140,0,.1)"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  />
+                  <rect
+                    x="14"
+                    y="22"
+                    width="12"
+                    height="30"
+                    rx="4"
+                    fill="currentColor"
+                    opacity=".8"
+                  />
+                  <rect
+                    x="29"
+                    y="22"
+                    width="12"
+                    height="30"
+                    rx="4"
+                    fill="currentColor"
+                    opacity=".6"
+                  />
+                  <rect
+                    x="44"
+                    y="22"
+                    width="12"
+                    height="30"
+                    rx="4"
+                    fill="currentColor"
+                    opacity=".4"
+                  />
+                  <rect x="6" y="34" width="58" height="2" fill="currentColor" opacity=".3" />
+                  <rect
+                    x="22"
+                    y="6"
+                    width="26"
+                    height="10"
+                    rx="5"
+                    fill="currentColor"
+                    opacity=".7"
+                  />
+                  <circle cx="35" cy="11" r="3" fill="rgba(255,140,0,.9)" />
+                </svg>
+              </div>
+              <div class="ccard-name">
+                CAÇA-
+                <br />
+                NÍQUEL
+              </div>
+              <div class="ccard-desc">
+                Gire os rolos e
+                <br />
+                tente o jackpot!
+              </div>
+              <div class="ccard-cta">JOGAR</div>
+            </div>
+          </div>
+
+          <!-- ROLETA -->
+          <div class="ccard ccard-rlt" data-goto="roulette-game" aria-label="Roleta">
+            <div class="ccard-inner">
+              <div class="ccard-glow"></div>
+              <div class="ccard-icon" style="color: var(--pink)">
+                <svg viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle
+                    cx="35"
+                    cy="35"
+                    r="30"
+                    fill="rgba(255,45,120,.08)"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  />
+                  <circle
+                    cx="35"
+                    cy="35"
+                    r="22"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    opacity=".5"
+                  />
+                  <circle cx="35" cy="35" r="8" fill="currentColor" opacity=".8" />
+                  <rect x="33.5" y="7" width="3" height="10" rx="1.5" fill="#e53935" />
+                  <rect x="33.5" y="53" width="3" height="10" rx="1.5" fill="#333" />
+                  <rect x="7" y="33.5" width="10" height="3" rx="1.5" fill="#e53935" />
+                  <rect x="53" y="33.5" width="10" height="3" rx="1.5" fill="#333" />
+                  <rect
+                    x="33.5"
+                    y="7"
+                    width="3"
+                    height="10"
+                    rx="1.5"
+                    fill="#e53935"
+                    transform="rotate(45 35 35)"
+                  />
+                  <rect
+                    x="33.5"
+                    y="7"
+                    width="3"
+                    height="10"
+                    rx="1.5"
+                    fill="#333"
+                    transform="rotate(-45 35 35)"
+                  />
+                  <rect
+                    x="33.5"
+                    y="7"
+                    width="3"
+                    height="10"
+                    rx="1.5"
+                    fill="#2e7d32"
+                    transform="rotate(22.5 35 35)"
+                  />
+                  <path
+                    d="M35 14 L35 35"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    opacity=".9"
+                  />
+                </svg>
+              </div>
+              <div class="ccard-name">ROLETA</div>
+              <div class="ccard-desc">
+                Vermelho, preto
+                <br />
+                ou verde?
+              </div>
+              <div class="ccard-cta">JOGAR</div>
+            </div>
+          </div>
+
+          <!-- CRASH -->
+          <div class="ccard ccard-crash" data-goto="crash-game" aria-label="Crash">
+            <div class="ccard-inner">
+              <div class="ccard-glow"></div>
+              <div class="ccard-icon" style="color: var(--blue)">
+                <svg viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect
+                    x="8"
+                    y="55"
+                    width="54"
+                    height="3"
+                    rx="1.5"
+                    fill="currentColor"
+                    opacity=".4"
+                  />
+                  <rect
+                    x="8"
+                    y="12"
+                    width="3"
+                    height="46"
+                    rx="1.5"
+                    fill="currentColor"
+                    opacity=".4"
+                  />
+                  <path
+                    d="M11 55 Q20 50 28 40 Q36 28 44 22 Q52 16 60 10"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    fill="none"
+                  />
+                  <path
+                    d="M11 55 Q20 50 28 40 Q36 28 44 22 Q52 16 60 10 L60 55 Z"
+                    fill="currentColor"
+                    opacity=".1"
+                  />
+                  <circle cx="60" cy="10" r="5" fill="currentColor" />
+                  <path
+                    d="M56 6 L64 14 M64 6 L56 14"
+                    stroke="#05030e"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                  <text
+                    x="55"
+                    y="35"
+                    font-size="10"
+                    fill="currentColor"
+                    font-family="monospace"
+                    font-weight="bold"
+                    opacity=".7"
+                  >
+                    2x
+                  </text>
+                </svg>
+              </div>
+              <div class="ccard-name">CRASH</div>
+              <div class="ccard-desc">
+                Saque antes do
+                <br />
+                crash!
+              </div>
+              <div class="ccard-cta">JOGAR</div>
+            </div>
+          </div>
+        </div>
+        <!-- /casino-grid -->
+      </div>
+      <!-- /casino-wrap -->
+    </section>
+
+    <!-- =====================================================================
+     CASINO — CAÇA-NÍQUEL
+     ===================================================================== -->
+    <section id="slots" class="screen">
+      <nav class="nav">
+        <div class="nav-back" id="slots-back" role="button">
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M10.5 3L5.5 8l5 5" />
+          </svg>
+          VOLTAR
+        </div>
+        <span class="nav-logo" style="color: var(--orange)">CAÇA-NÍQUEL</span>
+        <div class="spacer"></div>
+        <div class="casino-bal-pill">
+          💰
+          <span id="slots-bal">$500</span>
+        </div>
+      </nav>
+      <div class="slots-arena">
+        <div class="slot-machine">
+          <div class="slot-machine-title">🎰 SLOT MACHINE 🎰</div>
+          <div class="slot-reels">
+            <div class="slot-reel-wrap">
+              <div class="slot-sym-display" id="reel-0">🍒</div>
+              <div class="slot-win-line"></div>
+            </div>
+            <div class="slot-reel-wrap">
+              <div class="slot-sym-display" id="reel-1">🍋</div>
+              <div class="slot-win-line"></div>
+            </div>
+            <div class="slot-reel-wrap">
+              <div class="slot-sym-display" id="reel-2">🔔</div>
+              <div class="slot-win-line"></div>
+            </div>
+          </div>
+          <div class="slot-info-row">
+            <span>
+              <span class="lbl">APOSTA:</span>
+              <span class="val" id="slot-bet-amount">$10</span>
+            </span>
+            <span>
+              <span class="lbl">SALDO:</span>
+              <span class="val" id="slots-bal2">$500</span>
+            </span>
+          </div>
+          <div class="slot-win-msg" id="slot-msg">Pressione GIRAR para jogar!</div>
+          <div
+            class="btn-arc btn-dice kb-focus"
+            id="btn-spin"
+            role="button"
+            style="margin-top: 14px; width: 100%; text-align: center"
+          >
+            GIRAR — $10
+          </div>
+        </div>
+        <div class="slot-paytable">
+          <h4>TABELA DE PRÊMIOS</h4>
+          <div class="pay-row">
+            <span class="syms">&#127920; &#127920; &#127920;</span>
+            <span class="mult">JACKPOT — $500</span>
+          </div>
+          <div class="pay-row">
+            <span class="syms">💎 💎 💎</span>
+            <span class="mult">×20 — $200</span>
+          </div>
+          <div class="pay-row">
+            <span class="syms">🔔 🔔 🔔</span>
+            <span class="mult">×10 — $100</span>
+          </div>
+          <div class="pay-row">
+            <span class="syms">⭐ ⭐ ⭐</span>
+            <span class="mult">×8 — $80</span>
+          </div>
+          <div class="pay-row">
+            <span class="syms">🍒 🍒 🍒</span>
+            <span class="mult">×5 — $50</span>
+          </div>
+          <div class="pay-row">
+            <span class="syms">🍋 🍋 🍋</span>
+            <span class="mult">×3 — $30</span>
+          </div>
+          <div class="pay-row">
+            <span class="syms">Qualquer par</span>
+            <span class="mult">×1.5 — $15</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+     CASINO — ROLETA
+     ===================================================================== -->
+    <section id="roulette-game" class="screen">
+      <nav class="nav">
+        <div class="nav-back" id="rlt-back" role="button">
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M10.5 3L5.5 8l5 5" />
+          </svg>
+          VOLTAR
+        </div>
+        <span class="nav-logo" style="color: var(--pink)">ROLETA</span>
+        <div class="spacer"></div>
+        <div class="casino-bal-pill">
+          💰
+          <span id="rlt-bal">$500</span>
+        </div>
+      </nav>
+      <div class="roulette-arena">
+        <p class="game-sub">— Faça sua aposta e gire —</p>
+        <div class="roulette-top">
+          <div class="roulette-wheel-wrap">
+            <canvas id="roulette-canvas" class="roulette-canvas" width="280" height="280"></canvas>
+            <div class="roulette-needle"></div>
+            <div class="roulette-center-dot">
+              <div class="roulette-result-num" id="rlt-num">—</div>
+            </div>
+          </div>
+          <div class="roulette-bet-panel">
+            <div>
+              <div class="roulette-bet-label">VALOR DA APOSTA</div>
+              <input
+                class="roulette-bet-input"
+                id="rlt-bet-input"
+                type="number"
+                min="1"
+                max="1000"
+                value="20"
+                readonly
+              />
+            </div>
+            <div>
+              <div class="roulette-bet-label">APOSTE EM</div>
+              <div class="rlt-colors">
+                <div class="rc-btn red" id="rc-red" role="button">
+                  🔴
+                  <br />
+                  VERMELHO
+                  <span class="mult-lbl">×2</span>
+                </div>
+                <div class="rc-btn black" id="rc-black" role="button">
+                  ⚫
+                  <br />
+                  PRETO
+                  <span class="mult-lbl">×2</span>
+                </div>
+                <div class="rc-btn grn" id="rc-green" role="button">
+                  🟢
+                  <br />
+                  VERDE
+                  <span class="mult-lbl">×14</span>
+                </div>
+              </div>
+            </div>
+            <div class="btn-arc btn-jkp kb-focus" id="btn-spin-rlt" role="button">GIRAR</div>
+          </div>
+        </div>
+        <div class="rlt-result-box" id="rlt-result">Escolha uma cor e gire a roleta</div>
+        <div class="rlt-history" id="rlt-history"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+     CASINO — CRASH GAME
+     ===================================================================== -->
+    <section id="crash-game" class="screen">
+      <nav class="nav">
+        <div class="nav-back" id="crash-back" role="button">
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M10.5 3L5.5 8l5 5" />
+          </svg>
+          VOLTAR
+        </div>
+        <span class="nav-logo" style="color: var(--blue)">CRASH</span>
+        <div class="spacer"></div>
+        <div class="casino-bal-pill">
+          💰
+          <span id="crash-bal">$500</span>
+        </div>
+      </nav>
+      <div class="crash-arena">
+        <p class="game-sub">— Saque antes do crash! —</p>
+        <div class="crash-display">
+          <canvas id="crash-canvas" height="240"></canvas>
+          <div class="crash-mult-overlay" id="crash-mult">1.00×</div>
+        </div>
+        <div class="crash-controls">
+          <div class="crash-input-grp">
+            <label class="crash-lbl">APOSTA ($)</label>
+            <input
+              class="crash-input"
+              id="crash-bet-input"
+              type="text"
+              inputmode="numeric"
+              min="1"
+              max="1000"
+              value="50"
+              readonly
+            />
+          </div>
+          <div class="crash-input-grp">
+            <label class="crash-lbl">AUTO-SAQUE (×)</label>
+            <label
+              class="auto-toggle"
+              id="crash-auto-toggle"
+              role="checkbox"
+              aria-checked="false"
+              aria-label="Ativar auto-saque"
+            >
+              <input id="crash-auto-enabled" type="checkbox" />
+              <span class="auto-toggle-box"></span>
+            </label>
+            <input
+              class="crash-input"
+              id="crash-auto-input"
+              type="text"
+              inputmode="decimal"
+              min="1.1"
+              max="100"
+              step="0.1"
+              value="2.0"
+              readonly
+            />
+          </div>
+          <div class="btn-arc btn-bet kb-focus" id="btn-crash-bet" role="button">APOSTAR</div>
+          <div class="btn-arc btn-cashout disabled" id="btn-crash-out" role="button">SACAR</div>
+        </div>
+        <div class="crash-result-box" id="crash-result">Aposte e espere o multiplicador subir!</div>
+        <div class="crash-history" id="crash-history"></div>
+      </div>
+    </section>
+
+    <div id="key-feedback" class="global-key-feedback" aria-hidden="true">
+      <div class="kbd-row"><span class="kbd-key" data-key="ArrowUp">↑</span></div>
+      <div class="kbd-row">
+        <span class="kbd-key" data-key="ArrowLeft">←</span>
+        <span class="kbd-key" data-key="Enter">Enter</span>
+        <span class="kbd-key" data-key="ArrowRight">→</span>
+      </div>
+      <div class="kbd-row"><span class="kbd-key" data-key="Escape">Esc</span></div>
+    </div>
+    <div id="global-input-numpad" class="input-numpad hidden" aria-hidden="true">
+      <div class="numpad-title">Numpad</div>
+      <div class="numpad-value" id="numpad-value">$0</div>
+      <div class="numpad-grid">
+        <button class="numpad-key" type="button" data-key="7">7</button>
+        <button class="numpad-key" type="button" data-key="8">8</button>
+        <button class="numpad-key" type="button" data-key="9">9</button>
+        <button class="numpad-key" type="button" data-key="4">4</button>
+        <button class="numpad-key" type="button" data-key="5">5</button>
+        <button class="numpad-key" type="button" data-key="6">6</button>
+        <button class="numpad-key" type="button" data-key="1">1</button>
+        <button class="numpad-key" type="button" data-key="2">2</button>
+        <button class="numpad-key" type="button" data-key="3">3</button>
+        <button class="numpad-key" type="button" data-key="0">0</button>
+        <button class="numpad-key" type="button" data-key=".">.</button>
+        <button class="numpad-key" type="button" data-key="backspace">⌫</button>
+        <button class="numpad-key wide" type="button" data-key="enter">ENTER</button>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+     JAVASCRIPT
+     ===================================================================== -->
+    <script src="js/script.js"></script>
+  </body>
+</html>
