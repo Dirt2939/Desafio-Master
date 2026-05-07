@@ -305,6 +305,52 @@
               </div>
             </div>
           </div>
+
+          <!-- UNDERTALE -->
+          <div class="gcard gcard-undertale" id="pg-undertale" role="button" aria-label="Undertale">
+            <div class="gcard-inner">
+              <div class="gcard-glow"></div>
+              <div class="gcard-icon" style="color: var(--pink)">
+                <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect
+                    x="12"
+                    y="20"
+                    width="52"
+                    height="42"
+                    rx="2"
+                    fill="rgba(255,45,120,.08)"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  />
+                  <path
+                    d="M38 56 L24 42 C18 36 20 26 29 26 C34 26 37 29 38 33 C39 29 42 26 47 26 C56 26 58 36 52 42 Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M17 16 H27 M49 16 H59 M17 66 H27 M49 66 H59"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    opacity=".75"
+                  />
+                  <path
+                    d="M24 12 L52 12 M24 70 L52 70"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    opacity=".35"
+                  />
+                </svg>
+              </div>
+              <div class="gcard-name">UNDERTALE</div>
+              <div class="gcard-desc">
+                Sobreviva no
+                <br />
+                quadrado!
+              </div>
+              <div class="gcard-cta">ENTRAR</div>
+            </div>
+          </div>
         </div>
         <!-- /pg-grid -->
 
@@ -567,6 +613,172 @@
           </div>
         </div>
         <!-- /game-grid -->
+      </div>
+    </section>
+
+    <!-- =====================================================================
+     UNDERTALE -- Boss selection
+     ===================================================================== -->
+    <section id="undertale-hub" class="screen">
+      <div class="undertale-wrap">
+        <nav class="nav ut-nav">
+          <div class="nav-back" id="ut-hub-back" role="button">
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <path d="M10.5 3L5.5 8l5 5" />
+            </svg>
+            VOLTAR
+          </div>
+          <span class="nav-logo ut-nav-logo">UNDERTALE</span>
+          <div class="spacer"></div>
+        </nav>
+
+        <div class="ut-hero">
+          <h1 class="ut-logo">UNDERTALE</h1>
+          <p class="ut-tagline">SELECT SURVIVAL</p>
+          <div class="ut-progress" aria-live="polite">
+            <div class="ut-soul-chip" id="ut-chip-bone">
+              <span></span>
+              OSSADA
+            </div>
+            <div class="ut-soul-chip" id="ut-chip-queen">
+              <span></span>
+              RAINHA
+            </div>
+          </div>
+        </div>
+
+        <div class="ut-grid" id="ut-boss-grid">
+          <div class="ut-card" data-ut-boss="bone" role="button" aria-label="Chefe Ossada">
+            <div class="ut-card-glow"></div>
+            <div class="ut-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="45" cy="45" r="29" stroke="currentColor" stroke-width="4" />
+                <path d="M33 39 H39 M51 39 H57" stroke="currentColor" stroke-width="5" />
+                <path d="M35 58 H55 M39 64 H51" stroke="currentColor" stroke-width="4" />
+                <path d="M25 75 H65" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+                <path d="M31 22 L24 13 M59 22 L66 13" stroke="currentColor" stroke-width="4" />
+              </svg>
+            </div>
+            <div class="ut-card-name">BOSS 1</div>
+            <div class="ut-card-desc">Ataques de ossos e disparos laterais.</div>
+            <div class="ut-card-cta">JOGAR</div>
+          </div>
+
+          <div
+            class="ut-card locked"
+            id="ut-card-final"
+            data-ut-boss="final"
+            role="button"
+            aria-label="Final bloqueado"
+          >
+            <div class="ut-card-glow"></div>
+            <div class="ut-card-lock">LOCKED</div>
+            <div class="ut-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M45 67 L24 46 C15 37 18 22 32 22 C39 22 43 26 45 32 C47 26 51 22 58 22 C72 22 75 37 66 46 Z"
+                  fill="currentColor"
+                />
+                <path d="M17 74 H73 M22 14 H68" stroke="currentColor" stroke-width="4" />
+                <path d="M45 20 V71" stroke="#05030e" stroke-width="3" opacity=".6" />
+              </svg>
+            </div>
+            <div class="ut-card-name">FINAL</div>
+            <div class="ut-card-desc">Liberado quando os dois chefes cairem.</div>
+            <div class="ut-card-cta">BLOQUEADO</div>
+          </div>
+
+          <div class="ut-card" data-ut-boss="queen" role="button" aria-label="Chefe Rainha">
+            <div class="ut-card-glow"></div>
+            <div class="ut-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M20 35 L20 24 L30 31 L45 13 L60 31 L70 24 L70 35 Z"
+                  fill="currentColor"
+                />
+                <rect x="20" y="35" width="50" height="9" rx="3" fill="currentColor" />
+                <path
+                  d="M26 53 C31 44 59 44 64 53 L59 75 H31 Z"
+                  stroke="currentColor"
+                  stroke-width="4"
+                  fill="rgba(255,255,255,.03)"
+                />
+                <circle cx="36" cy="60" r="3" fill="currentColor" />
+                <circle cx="54" cy="60" r="3" fill="currentColor" />
+                <path d="M38 70 H52" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div class="ut-card-name">BOSS 2</div>
+            <div class="ut-card-desc">Ondas, lancas e paredes fechando.</div>
+            <div class="ut-card-cta">JOGAR</div>
+          </div>
+        </div>
+
+        <div class="kb-hint-hub ut-hint show" id="ut-hub-hint" aria-live="polite">
+          <span class="key">&larr;</span>
+          <span class="key">&rarr;</span>
+          navegar &nbsp;|&nbsp;
+          <span class="key">ENTER</span>
+          selecionar &nbsp;|&nbsp;
+          <span class="key">ESC</span>
+          voltar
+        </div>
+        <div class="ut-lock-msg" id="ut-lock-msg">Derrote BOSS 1 e BOSS 2 para abrir o FINAL.</div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+     UNDERTALE -- Battle
+     ===================================================================== -->
+    <section id="ut-battle" class="screen">
+      <nav class="nav">
+        <div class="nav-back" id="ut-battle-back" role="button">
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M10.5 3L5.5 8l5 5" />
+          </svg>
+          VOLTAR
+        </div>
+        <span class="nav-logo ut-nav-logo" id="ut-battle-title">SURVIVAL</span>
+        <div class="spacer"></div>
+        <div class="ut-hp-pill">
+          HP
+          <span id="ut-player-hp-label">5 / 5</span>
+        </div>
+      </nav>
+
+      <div class="ut-battle-arena">
+        <div class="ut-boss-row">
+          <div>
+            <div class="ut-boss-name" id="ut-boss-name">BOSS</div>
+            <div class="ut-boss-sub" id="ut-boss-sub">Survive the pattern.</div>
+          </div>
+        </div>
+        <div class="ut-canvas-frame">
+          <canvas id="ut-canvas" width="520" height="360"></canvas>
+        </div>
+        <div class="ut-command-row">
+          <div class="ut-status" id="ut-status">Pressione ENTER para comecar.</div>
+        </div>
+        <div class="kb-hint-game">
+          <span class="key">SETAS</span>
+          mover &nbsp;|&nbsp;
+          <span class="key">ENTER</span>
+          iniciar &nbsp;|&nbsp;
+          <span class="key">ESC</span>
+          voltar
+        </div>
       </div>
     </section>
 
