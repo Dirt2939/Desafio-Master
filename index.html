@@ -359,7 +359,9 @@
           <span class="key">&rarr;</span>
           navegar &nbsp;|&nbsp;
           <span class="key">ENTER</span>
-          selecionar
+          selecionar &nbsp;|&nbsp;
+          <span class="key">I</span>
+          chat IA
         </div>
       </div>
       <!-- /hub-wrap -->
@@ -381,7 +383,9 @@
             <span class="key">&rarr;</span>
             navegar &nbsp;|&nbsp;
             <span class="key">ENTER</span>
-            selecionar
+            selecionar &nbsp;|&nbsp;
+            <span class="key">I</span>
+            chat IA
           </div>
         </div>
 
@@ -1969,7 +1973,46 @@
       </div>
     </section>
 
+    <aside class="ai-chat" id="ai-chat" aria-label="Chat Arcade">
+      <button class="ai-chat-toggle" id="ai-chat-toggle" type="button" aria-label="Abrir chat pela tecla I">
+        <svg viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="9" y="13" width="24" height="19" rx="5" stroke="currentColor" stroke-width="2.6" />
+          <path d="M16 9 V13 M26 9 V13 M14 35 L17 32 M28 35 L25 32" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+          <circle cx="17" cy="22" r="2" fill="currentColor" />
+          <circle cx="25" cy="22" r="2" fill="currentColor" />
+          <path d="M17 27 H25" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+        </svg>
+      </button>
+      <section class="ai-chat-panel" id="ai-chat-panel" aria-hidden="true">
+        <header class="ai-chat-head">
+          <div>
+            <div class="ai-chat-title">ARCADE AI</div>
+            <div class="ai-chat-sub">ONLINE</div>
+          </div>
+          <button class="ai-chat-close" id="ai-chat-close" type="button" aria-label="Fechar chat">
+            X
+          </button>
+        </header>
+        <div class="ai-chat-log" id="ai-chat-log" aria-live="polite">
+          <div class="ai-msg bot">Pergunte sobre os jogos ou mude a facilidade do Casino JS.</div>
+        </div>
+        <form class="ai-chat-form" id="ai-chat-form">
+          <textarea
+            id="ai-chat-input"
+            rows="1"
+            maxlength="500"
+            placeholder="Digite sua mensagem"
+            aria-label="Mensagem para o chatbot"
+          ></textarea>
+          <button class="ai-chat-send" id="ai-chat-send" type="submit" aria-label="Enviar">
+            &gt;
+          </button>
+        </form>
+      </section>
+    </aside>
+
     <div id="key-feedback" class="global-key-feedback" aria-hidden="true">
+      <div class="kbd-row"><span class="kbd-key" data-key="I">I</span></div>
       <div class="kbd-row"><span class="kbd-key" data-key="ArrowUp">↑</span></div>
       <div class="kbd-row">
         <span class="kbd-key" data-key="ArrowLeft">←</span>

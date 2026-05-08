@@ -116,16 +116,55 @@ DESAFIOFINAL/
 
 ## Como Executar o Projeto Localmente
 
-1. Abra a pasta do projeto:
+### Com chatbot IA
 
-```bash
-cd Academico/web/DESAFIOFINAL
+O chatbot usa um backend Node.js puro para conversar com a API do Google AI Studio.
+
+1. Configure sua chave da API:
+
+```powershell
+$env:GOOGLE_AI_API_KEY="SUA_CHAVE_DO_GOOGLE_AI_STUDIO"
 ```
 
-2. Abra o arquivo `index.html` no navegador.
+2. Inicie o servidor:
 
-Também é possível executar com uma extensão como **Live Server** no VS Code, se desejar testar o
-projeto por um servidor local.
+```powershell
+node server.js
+```
+
+3. Abra no navegador:
+
+```text
+http://localhost:3000
+```
+
+Tambem e possivel trocar o modelo com a variavel `GEMINI_MODEL`.
+
+### Sem chatbot IA
+
+Abra o arquivo `index.html` diretamente no navegador para testar os jogos. Nesse modo o chatbot nao
+consegue chamar a IA, porque depende do backend em `server.js`.
+
+---
+
+## Chatbot IA
+
+O fluxo do chatbot fica dividido assim:
+
+- `server.js`: recebe a mensagem, chama a API do Google AI Studio, intercepta a resposta JSON e serve
+  os arquivos estaticos do site.
+- `config/chatbot-rules.txt`: guarda as regras usadas no System Prompt.
+- `data/chatbot-state.json`: funciona como banco local simples para salvar a facilidade atual.
+- `index.html`, `css/style.css` e `js/script.js`: exibem a janela de chat integrada ao tema arcade.
+
+O System Prompt classificador obriga a IA a responder somente este JSON:
+
+```json
+{"eh_pergunta": true, "mudanca_dificuldade": "nao_detectado"}
+```
+
+Quando `mudanca_dificuldade` vem como `facil`, `medio` ou `dificil`, o backend salva o novo estado e
+retorna a mensagem fixa `Facilidade alterada para [valor]`.
 
 ---
 

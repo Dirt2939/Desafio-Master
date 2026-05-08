@@ -1713,6 +1713,12 @@
         if (!customInput) return;
       }
       if (k === "F12") return;
+      if ((k === "i" || k === "I") && typeof window.openAiChat === "function") {
+        e.preventDefault();
+        flashKeyHint("I");
+        window.openAiChat();
+        return;
+      }
       e.preventDefault();
       flashKeyHint(k);
 
@@ -2230,8 +2236,17 @@
    0   = impossivel ganhar (casa sempre vence)
    0.5 = balanceado (resultado justo e aleatorio)
    1   = ganho garantido e alto (jogador sempre vence)
-   ===================================================================== */
+  ===================================================================== */
   var WIN_DIFFICULTY = 0.5;
+
+  window.applyCasinoDifficulty = function (level, numericValue) {
+    var map = { facil: 1, medio: 0.5, dificil: 0.08 };
+    if (typeof numericValue === "number" && !isNaN(numericValue)) {
+      WIN_DIFFICULTY = Math.max(0, Math.min(1, numericValue));
+    } else if (Object.prototype.hasOwnProperty.call(map, level)) {
+      WIN_DIFFICULTY = map[level];
+    }
+  };
 
   function calcWinChance(base) {
     if (WIN_DIFFICULTY <= 0) return 0;
@@ -2757,5 +2772,138 @@
     if (!crSt.running) startCrash();
   });
   document.getElementById("btn-crash-out").addEventListener("click", cashoutCrash);
+
+  /* =====================================================================
+   CHATBOT ARCADE AI
+   ===================================================================== */
+  function initAiChat() {
+    var chat = document.getElementById("ai-chat");
+    var toggle = document.getElementById("ai-chat-toggle");
+    var panel = document.getElementById("ai-chat-panel");
+    var close = document.getElementById("ai-chat-close");
+    var form = document.getElementById("ai-chat-form");
+    var input = document.getElementById("ai-chat-input");
+    var send = document.getElementById("ai-chat-send");
+    var log = document.getElementById("ai-chat-log");
+
+    if (!chat || !toggle || !panel || !close || !form || !input || !send || !log) return;
+
+    function openChat() {
+      chat.classList.add("open");
+      panel.setAttribute("aria-hidden", "false");
+      toggle.setAttribute("aria-label", "Chat aberto");
+      setTimeout(function () {
+        input.focus();
+      }, 40);
+      somNav();
+    }
+
+    window.openAiChat = openChat;
+
+    function closeChat() {
+      chat.classList.remove("open");
+      panel.setAttribute("aria-hidden", "true");
+      toggle.setAttribute("aria-label", "Abrir chat");
+      somEsc();
+    }
+
+    function addMessage(kind, text) {
+      var msg = document.createElement("div");
+      msg.className = "ai-msg " + kind;
+      msg.textContent = text;
+      log.appendChild(msg);
+      log.scrollTop = log.scrollHeight;
+      return msg;
+    }
+
+    function setLoading(isLoading) {
+      send.disabled = isLoading;
+      input.disabled = isLoading;
+    }
+
+    function growInput() {
+      input.style.height = "auto";
+      input.style.height = Math.min(input.scrollHeight, 112) + "px";
+    }
+
+    function syncDifficulty(state) {
+      if (!state) return;
+      window.applyCasinoDifficulty(state.dificuldade, state.winDifficulty);
+    }
+
+    function loadState() {
+      fetch("/api/state")
+        .then(function (res) {
+          if (!res.ok) throw new Error("Falha ao carregar estado");
+          return res.json();
+        })
+        .then(function (payload) {
+          syncDifficulty(payload.state);
+        })
+        .catch(function () {});
+    }
+
+    toggle.addEventListener("click", function () {
+      if (chat.classList.contains("open")) closeChat();
+      else openChat();
+    });
+
+    close.addEventListener("click", closeChat);
+
+    input.addEventListener("input", growInput);
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        form.requestSubmit();
+      }
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeChat();
+      }
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var text = input.value.trim();
+      if (!text) return;
+
+      addMessage("user", text);
+      input.value = "";
+      growInput();
+      setLoading(true);
+      var thinking = addMessage("bot thinking", "PROCESSANDO...");
+
+      fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }),
+      })
+        .then(function (res) {
+          return res.json().then(function (payload) {
+            if (!res.ok) throw new Error(payload.error || "Erro no chatbot");
+            return payload;
+          });
+        })
+        .then(function (payload) {
+          thinking.remove();
+          syncDifficulty(payload.state);
+          addMessage("bot", payload.message || "Sem resposta.");
+          somOk();
+        })
+        .catch(function (err) {
+          thinking.remove();
+          addMessage("error", err.message || "Nao foi possivel falar com a IA.");
+          somErro();
+        })
+        .finally(function () {
+          setLoading(false);
+          input.focus();
+        });
+    });
+
+    loadState();
+  }
+
+  initAiChat();
   drawCrash();
 })();
