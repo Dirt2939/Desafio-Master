@@ -1,4 +1,4 @@
-# Playground JS | Arcade JS e Casino JS
+﻿# Playground JS
 
 **Colégio ULBRA São Lucas - Curso Técnico em Informática**  
 _Projeto desenvolvido para o módulo de Lógica e Programação Web._
@@ -7,43 +7,43 @@ _Projeto desenvolvido para o módulo de Lógica e Programação Web._
 
 ## Sobre o Projeto
 
-O **Playground JS** é uma aplicação web interativa criada com HTML, CSS e JavaScript puro. O projeto
-funciona como um hub de minijogos, dividido em duas áreas principais:
+O **Playground JS** é uma aplicação web interativa feita com HTML, CSS e JavaScript puro. O projeto funciona como um hub de minijogos com visual arcade neon, navegação por teclado e mouse, efeitos sonoros, animações em canvas e controle de estado no front-end.
 
-- **Arcade JS:** jogos clássicos e rápidos, com foco em lógica, sorte e placar.
-- **Casino JS:** jogos com saldo, apostas fictícias, multiplicadores e animações.
+A tela inicial organiza a experiência em três hubs:
 
-O objetivo principal é aplicar conceitos fundamentais de desenvolvimento Front-End, como manipulação
-do DOM, eventos de teclado e mouse, controle de estados, funções, condicionais, sorteios com
-`Math.random()` e atualização dinâmica da interface.
+- **Clássicos:** jogos rápidos de sorte, escolha e placar.
+- **Arcade:** jogos de ação, reflexo, sobrevivência e boss fight.
+- **Cassino:** jogos com saldo fictício, apostas simuladas e verificação de idade.
+
+O objetivo principal é aplicar conceitos fundamentais de desenvolvimento front-end, como manipulação do DOM, eventos, funções, objetos, arrays, condicionais, temporizadores, `requestAnimationFrame`, Canvas API e Web Audio API.
 
 ---
 
 ## Funcionalidades
 
-- Tela inicial com seleção entre **Arcade JS** e **Casino JS**.
-- Navegação por teclado.
-- Feedback visual para seleção, foco e resultados.
-- Efeitos sonoros gerados com a Web Audio API.
-- Animação de confete para vitórias.
-- Interface em estilo arcade neon.
-- Placar dinâmico nos jogos competitivos.
+- Tela inicial com hubs **Clássicos**, **Arcade** e **Cassino**.
+- Cards com descrições curtas para cada hub e jogo.
+- Navegação por teclado e mouse.
+- Feedback visual de foco, seleção, vitória, derrota e estados de bloqueio.
+- Efeitos sonoros gerados com Web Audio API.
+- Animações e jogos renderizados com Canvas API.
+- Visual retrofuturista com grid, brilho neon, cards, HUDs e painéis temáticos.
+- Layout responsivo.
+- Chat de ajuda acessível pela tecla `I`.
+- Modal de verificação de idade antes de acessar o Cassino.
 - Sistema de saldo fictício nos jogos de cassino.
-- Modal de verificação de idade antes de acessar a área Casino JS.
-- Layout responsivo para diferentes tamanhos de tela.
 
 ---
 
 ## Jogos Disponíveis
 
-### Arcade JS
+### Clássicos
 
 **Jokenpô**
 
 - O jogador escolhe entre pedra, papel ou tesoura.
 - O computador faz uma escolha aleatória.
-- O sistema compara as jogadas e informa vitória, derrota ou empate.
-- O placar de vitórias, derrotas e empates é atualizado na tela.
+- O sistema compara as jogadas e atualiza o placar de vitórias, derrotas e empates.
 
 **Batalha de Dados**
 
@@ -57,7 +57,31 @@ do DOM, eventos de teclado e mouse, controle de estados, funções, condicionais
 - O sistema sorteia o resultado.
 - A moeda recebe animação e o placar é atualizado.
 
-### Casino JS
+### Arcade
+
+**Undertale**
+
+- Hub de bosses com combates inspirados em Undertale.
+- Inclui movimentação em arena, ataques, ações, spare/kill e estados de progresso.
+- O boss final fica bloqueado até os requisitos serem cumpridos.
+
+**Geometry Race**
+
+- Corrida split-screen inspirada em Geometry Dash.
+- Dois jogadores competem no mesmo mapa.
+- Quem sobreviver por mais tempo vence.
+- Inclui contagem regressiva, contador de metros e modos como cube, ship, gravity e wave.
+
+**CupShock**
+
+- Boss fight lateral inspirada na leitura de padrões de jogos como Cuphead e Undertale.
+- O jogador se aproxima do Sentinela Nexus, passa por uma introdução curta e entra na luta.
+- A luta usa fases progressivas, tiros, pulo, dash direcional, especial e padrões de ataque desviáveis.
+- Os ataques incluem lasers rasantes, orbes em arco, drones, impactos verticais e investida do núcleo.
+- A dificuldade aumenta por fase, mas os golpes possuem ritmo e aviso visual para o jogador reagir.
+- Ao vencer, o jogador desativa o núcleo e volta para o hub Arcade com `Enter`.
+
+### Cassino
 
 **Caça-Níquel**
 
@@ -74,119 +98,107 @@ do DOM, eventos de teclado e mouse, controle de estados, funções, condicionais
 **Crash**
 
 - O jogador aposta em um multiplicador crescente.
-- É necessário sacar antes do multiplicador "crashar".
-- O jogo possui opção de auto-saque e histórico de multiplicadores.
+- É necessário sacar antes do multiplicador quebrar.
+- O jogo possui auto-saque e histórico de multiplicadores.
+
+---
+
+## Controles
+
+### Navegação Geral
+
+- **Seta para esquerda / direita:** navegar entre cards e opções.
+- **Seta para cima / baixo:** mover em jogos ou ajustar controles específicos.
+- **Enter:** confirmar seleção, iniciar rodada, avançar diálogo ou reiniciar quando aplicável.
+- **Espaço:** ação principal em alguns jogos.
+- **Esc:** voltar para a tela anterior.
+- **F5:** recarregar a página.
+- **I:** abrir o chat de ajuda.
+- **Mouse:** clicar em cards, botões e opções.
+
+### Jogos Específicos
+
+- **Undertale:** setas para navegar/mover, `Enter` para selecionar e `Esc` para voltar.
+- **Geometry Race:** `W` ou `Espaço` para o Player 1; `Seta para cima` para o Player 2.
+- **CupShock:** `A/D` ou setas para mover; `W`, `Seta para cima` ou `Espaço` para pular; `J/Z` para atirar; `Shift` para dash direcional; `K/X` para especial; `Enter` para avançar diálogo, voltar após vencer ou reiniciar após perder.
 
 ---
 
 ## Tecnologias Utilizadas
 
-- **HTML5:** estrutura da página, seções dos jogos, SVGs e elementos interativos.
-- **CSS3:** layout, responsividade, animações, variáveis visuais e estilo arcade.
-- **JavaScript:** lógica dos jogos, manipulação do DOM, eventos e controle de estados.
-- **Canvas API:** animações de confete, roleta e gráfico do jogo Crash.
-- **Web Audio API:** efeitos sonoros gerados diretamente no navegador.
-- **Google Fonts:** fontes com estilo retrô e arcade.
+- **HTML5:** estrutura das telas, hubs, jogos, modais, SVGs e canvases.
+- **CSS3:** layout, responsividade, animações, variáveis visuais e estilo neon.
+- **JavaScript:** regras dos jogos, navegação, eventos, estado, placares, sons e animações.
+- **Canvas API:** renderização de jogos e efeitos visuais.
+- **Web Audio API:** efeitos sonoros gerados no navegador.
+- **Socket.IO:** dependência disponível no projeto para recursos com servidor.
+- **Node.js:** servidor local opcional via `server.js`.
 
 ---
 
 ## Estrutura do Projeto
 
 ```text
-DESAFIOFINAL/
-├── index.html
-├── README.md
-├── css/
-│   └── style.css
-└── js/
-    └── script.js
+Desafio-Master/
+|-- config/
+|-- css/
+|   `-- style.css
+|-- data/
+|-- js/
+|   `-- script.js
+|-- node_modules/
+|-- index.html
+|-- package.json
+|-- package-lock.json
+|-- README.md
+`-- server.js
 ```
 
 ### Responsabilidade dos Arquivos
 
-- `index.html`: contém a estrutura HTML das telas, hubs, jogos, modais, SVGs e canvases.
-- `css/style.css`: concentra todo o visual do projeto, incluindo cores, layout, animações e
-  responsividade.
-- `js/script.js`: concentra a lógica de navegação, eventos, jogos, placares, apostas, sons e
-  animações.
-- `modelo.md`: arquivo de referência usado como base para documentação.
-- `README.md`: documentação completa do projeto.
+- `index.html`: estrutura HTML das telas, hubs, jogos, modais, SVGs e canvases.
+- `css/style.css`: visual do projeto, incluindo layout, cores, responsividade e animações.
+- `js/script.js`: lógica de navegação, jogos, placares, controles, sons e renderização em canvas.
+- `server.js`: servidor Node.js opcional.
+- `config/`: arquivos de configuração do projeto.
+- `data/`: dados auxiliares usados pela aplicação.
+- `README.md`: documentação do projeto.
 
 ---
 
-## Como Executar o Projeto Localmente
+## Como Executar
 
-### Com chatbot IA
+### Abrindo direto no navegador
 
-O chatbot usa um backend Node.js puro para conversar com a API do Google AI Studio.
+1. Abra a pasta do projeto.
+2. Abra o arquivo `index.html` no navegador.
 
-1. Configure sua chave da API:
+### Usando o servidor local
 
-```powershell
-$env:GOOGLE_AI_API_KEY="SUA_CHAVE_DO_GOOGLE_AI_STUDIO"
+1. Instale as dependências, se necessário:
+
+```bash
+npm install
 ```
 
 2. Inicie o servidor:
 
-```powershell
-node server.js
+```bash
+npm start
 ```
 
-3. Abra no navegador:
-
-```text
-http://localhost:3000
-```
-
-Tambem e possivel trocar o modelo com a variavel `GEMINI_MODEL`.
-
-### Sem chatbot IA
-
-Abra o arquivo `index.html` diretamente no navegador para testar os jogos. Nesse modo o chatbot nao
-consegue chamar a IA, porque depende do backend em `server.js`.
-
----
-
-## Chatbot IA
-
-O fluxo do chatbot fica dividido assim:
-
-- `server.js`: recebe a mensagem, chama a API do Google AI Studio, intercepta a resposta JSON e serve
-  os arquivos estaticos do site.
-- `config/chatbot-rules.txt`: guarda as regras usadas no System Prompt.
-- `data/chatbot-state.json`: funciona como banco local simples para salvar a facilidade atual.
-- `index.html`, `css/style.css` e `js/script.js`: exibem a janela de chat integrada ao tema arcade.
-
-O System Prompt classificador obriga a IA a responder somente este JSON:
-
-```json
-{"eh_pergunta": true, "mudanca_dificuldade": "nao_detectado"}
-```
-
-Quando `mudanca_dificuldade` vem como `facil`, `medio` ou `dificil`, o backend salva o novo estado e
-retorna a mensagem fixa `Facilidade alterada para [valor]`.
+3. Acesse o endereço mostrado no terminal.
 
 ---
 
 ## Como Jogar
 
 1. Acesse a tela inicial do **Playground JS**.
-2. Escolha entre **Arcade JS** ou **Casino JS**.
-3. No Arcade JS, insira a moeda para liberar os jogos.
-4. No Casino JS, confirme a idade e insira o ticket para liberar os jogos.
-5. Use mouse ou teclado para navegar e confirmar as escolhas.
-6. Acompanhe o placar, o saldo e as mensagens de resultado exibidas na tela.
-
----
-
-## Controles
-
-- **Seta para esquerda:** navegar para a opção anterior.
-- **Seta para direita:** navegar para a próxima opção.
-- **Seta para cima / baixo:** ajustar valores em campos específicos.
-- **Enter:** confirmar seleção, jogar, girar ou acionar botão em foco.
-- **Esc:** voltar para a tela anterior.
-- **Mouse:** clicar nos cards, botões e opções dos jogos.
+2. Escolha um hub: **Clássicos**, **Arcade** ou **Cassino**.
+3. Em **Clássicos**, insira a moeda para liberar os jogos.
+4. Em **Arcade**, escolha entre Undertale, Geometry Race ou CupShock.
+5. Em **Cassino**, confirme a idade e insira o ticket.
+6. Use teclado ou mouse para jogar.
 
 ---
 
@@ -194,36 +206,40 @@ retorna a mensagem fixa `Facilidade alterada para [valor]`.
 
 - Declaração e chamada de funções.
 - Variáveis de controle de estado.
-- Objetos para armazenar placares e configurações.
-- Arrays para opções de jogos, símbolos e resultados.
-- Estruturas condicionais para definir vencedores.
-- Sorteios com `Math.random()`.
+- Objetos para placares, configurações e entidades dos jogos.
+- Arrays para opções, mapas, obstáculos, históricos e resultados.
+- Estruturas condicionais para definir regras, estados e vencedores.
+- Sorteios e geração dinâmica com `Math.random()`.
 - Manipulação de classes CSS com `classList`.
 - Manipulação de conteúdo com `textContent` e `innerHTML`.
 - Eventos com `addEventListener`.
 - Temporizadores com `setTimeout` e `setInterval`.
-- Animações com `requestAnimationFrame`.
+- Loops de animação com `requestAnimationFrame`.
+- Renderização 2D com Canvas API.
+- Efeitos sonoros com Web Audio API.
 
 ---
 
 ## Organização do Código
 
-O projeto foi organizado para separar responsabilidades:
+O projeto separa responsabilidades de forma simples:
 
-- A marcação principal fica no HTML.
-- A aparência fica em um arquivo CSS dedicado.
-- O comportamento fica em um arquivo JavaScript dedicado.
+- A estrutura fica em `index.html`.
+- A aparência fica em `css/style.css`.
+- O comportamento fica em `js/script.js`.
 
-O JavaScript está dividido por blocos comentados, facilitando a localização de cada parte do
-sistema:
+O JavaScript é dividido em blocos comentados para facilitar manutenção:
 
 - Áudio e efeitos.
 - Sistema de telas.
 - Hub principal.
-- Arcade JS.
-- Jogos do Arcade.
-- Casino JS.
-- Jogos do Casino.
-- Controles globais de teclado.
+- Hub Clássicos.
+- Hub Arcade.
+- Jogos Clássicos.
+- Geometry Race.
+- CupShock.
+- Cassino e seus jogos.
+- Undertale.
+- Chat de ajuda.
 
-Essa organização torna o código mais fácil de ler, manter e apresentar.
+Essa organização facilita leitura, apresentação e evolução do projeto.
