@@ -218,6 +218,8 @@ npm start
 - Renderização 2D com Canvas API.
 - Efeitos sonoros com Web Audio API.
 
+- - Apresentação de principais conceitos em:[ https://www.canva.com/design/DAHJeeXVn-s/QdmbhgV8kYZv5kT0r53w5A/edit](https://canva.link/l6rtkru1izvh2o2)
+
 ---
 
 ## Organização do Código
