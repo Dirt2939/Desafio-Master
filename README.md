@@ -187,7 +187,7 @@ npm install
 npm start
 ```
 
-3. Acesse o endereço mostrado no terminal.
+3. Acesse o endereço mostrado no terminal ou acesse https://dirt2939.github.io/Desafio-Master/.
 
 ---
 
