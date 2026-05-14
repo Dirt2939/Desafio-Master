@@ -1,7 +1,6 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
-const { Server } = require("socket.io");
 
 const PORT = Number(process.env.PORT || 3000);
 const GROK_MODEL = "x-ai/grok-4-1-fast";
@@ -255,7 +254,6 @@ const server = http.createServer(async (req, res) => {
 });
 
 ensureDb();
-const io = new Server(server);
 
 server.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);

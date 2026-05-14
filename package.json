@@ -2,13 +2,10 @@
   "name": "playground-js",
   "version": "1.0.0",
   "private": true,
-  "description": "Playground JS com chatbot Grok e jogo multiplayer via Socket.IO.",
+  "description": "Playground JS com minijogos, projetos DOM e chatbot via Puter.js.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"
-  },
-  "dependencies": {
-    "socket.io": "^4.8.1"
   }
 }

@@ -139,6 +139,11 @@
     CC: "caraCoroa",
     GEO: "geometry-race",
     CYBER: "cyber-maze",
+    PROJECTS: "projects-hub",
+    LIGHT: "light-switch",
+    PIGGY: "piggy-bank",
+    POMO: "pomodoro",
+    KEYBOARD: "virtual-keyboard",
     CASINO: "casino",
     SLOTS: "slots",
     ROULETTE: "roulette-game",
@@ -147,6 +152,43 @@
     UT_BATTLE: "undertale-battle",
   };
   var telaAtiva = TELA.HUB;
+  var STORAGE_TELA_ATIVA = "playground-js-active-screen";
+  var telasPersistiveis = {};
+  Object.keys(TELA).forEach(function (key) {
+    telasPersistiveis[TELA[key]] = true;
+  });
+  telasPersistiveis["modal-idade"] = false;
+  telasPersistiveis[TELA.UT_BATTLE] = false;
+  var telaInicialPersistida = "";
+  try {
+    telaInicialPersistida = localStorage.getItem(STORAGE_TELA_ATIVA) || "";
+  } catch (e) { }
+
+  function bloquearCliqueMouse(e) {
+    if (!e.isTrusted) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }
+
+  ["pointerdown", "mousedown", "mouseup", "click", "dblclick", "contextmenu"].forEach(function (eventName) {
+    window.addEventListener(eventName, bloquearCliqueMouse, true);
+  });
+
+  if (
+    telaInicialPersistida &&
+    telaInicialPersistida !== TELA.HUB &&
+    telasPersistiveis[telaInicialPersistida] &&
+    document.getElementById(telaInicialPersistida)
+  ) {
+    document.querySelectorAll(".screen").forEach(function (s) {
+      s.classList.remove("active");
+    });
+    var telaInicial = document.getElementById(telaInicialPersistida);
+    if (telaInicial) {
+      telaInicial.classList.add("active");
+      telaAtiva = telaInicialPersistida;
+    }
+  }
 
   function irPara(id) {
     document.querySelectorAll(".screen").forEach(function (s) {
@@ -156,14 +198,24 @@
     if (!t) return;
     t.classList.add("active");
     telaAtiva = id;
+    if (telasPersistiveis[id]) {
+      try {
+        localStorage.setItem(STORAGE_TELA_ATIVA, id);
+      } catch (e) { }
+    }
     t.scrollTop = 0;
-    if (id === TELA.ARCADE_GAMES) setTimeout(function () { arcadeGamesSetFoco(0); }, 60);
+    if (id === TELA.ARCADE_GAMES) setTimeout(function () { arcadeGamesEnter(); }, 60);
     if (id === TELA.JKP) setTimeout(function () { jkpSetFoco(0); }, 60);
     if (id === TELA.CC) setTimeout(function () { ccSetFoco(0); }, 60);
     if (id === TELA.GEO) setTimeout(function () { geoEnter(); }, 60);
     else geoStop();
     if (id === TELA.CYBER) setTimeout(function () { cyberEnter(); }, 60);
     else cyberStop();
+    if (id === TELA.PROJECTS) setTimeout(function () { projectsEnter(); }, 60);
+    if (id === TELA.LIGHT) setTimeout(function () { lightInit(); }, 60);
+    if (id === TELA.PIGGY) setTimeout(function () { piggyInit(); }, 60);
+    if (id === TELA.POMO) setTimeout(function () { pomoInit(); }, 60);
+    if (id === TELA.KEYBOARD) setTimeout(function () { synthInit(); }, 60);
     if (id === TELA.CASINO) setTimeout(function () { casinoSetFocoInicial(); }, 60);
     if (id === TELA.SLOTS) setTimeout(function () {
       var b = document.getElementById("btn-spin");
@@ -231,7 +283,16 @@
 
   document.getElementById("pg-arcade-games").addEventListener("click", function () {
     somNav();
+    arcadeGamesBooted = false;
+    arcadeGamesAnimating = false;
     irPara(TELA.ARCADE_GAMES);
+  });
+
+  document.getElementById("pg-projects").addEventListener("click", function () {
+    somNav();
+    projectsUnlocked = false;
+    projectsAnimating = false;
+    irPara(TELA.PROJECTS);
   });
 
   var pendingCasinoEntry = false;
@@ -445,7 +506,14 @@
   var inputNumpadInput = null;
   var inputNumpadBuffer = "";
   var inputNumpadFresh = false;
-  var SPECIAL_INPUTS = ["rlt-bet-input", "crash-bet-input", "crash-auto-input"];
+  var SPECIAL_INPUTS = [
+    "rlt-bet-input",
+    "crash-bet-input",
+    "crash-auto-input",
+    "piggy-withdraw",
+    "pomo-focus",
+    "pomo-break",
+  ];
 
   function isSpecialInput(el) {
     return el && el.tagName === "INPUT" && SPECIAL_INPUTS.indexOf(el.id) !== -1;
@@ -460,6 +528,10 @@
     if (!input) return;
     if (input.id === "crash-auto-input") {
       label = "×" + (input.value ? parseFloat(input.value).toFixed(1) : "0.0");
+    } else if (input.id === "piggy-withdraw") {
+      label = "R$ " + (input.value ? parseFloat(input.value).toFixed(2).replace(".", ",") : "0");
+    } else if (input.id === "pomo-focus" || input.id === "pomo-break") {
+      label = (input.value ? parseInt(input.value, 10) : 0) + " min";
     } else {
       label = "$" + (input.value ? parseInt(input.value, 10) : 0);
     }
@@ -486,6 +558,9 @@
   function getPresetValues(input) {
     if (!input) return [];
     if (input.id === "crash-auto-input") return [1.1, 1.5, 2.0, 3.0, 5.0, 10.0, 20.0, 50.0, 100.0];
+    if (input.id === "piggy-withdraw") return [0.1, 0.25, 0.5, 1, 2, 5, 10, 20, 50, 100];
+    if (input.id === "pomo-focus") return [5, 10, 15, 20, 25, 30, 45, 60, 90];
+    if (input.id === "pomo-break") return [1, 3, 5, 10, 15, 20, 30];
     return [10, 20, 50, 100, 200, 500, 1000];
   }
   function settleSpecialInputValue(input, value) {
@@ -496,6 +571,12 @@
         parseFloat(input.min) || 1.1,
         parseFloat(input.max) || 100,
       ).toFixed(1);
+    } else if (input.id === "piggy-withdraw") {
+      input.value = clampNumber(
+        value,
+        parseFloat(input.min) || 0,
+        parseFloat(input.max) || 100000,
+      ).toFixed(2);
     } else {
       input.value = Math.round(
         clampNumber(value, parseInt(input.min, 10) || 1, parseInt(input.max, 10) || 1000),
@@ -529,14 +610,14 @@
   function applyNumpadBuffer(input) {
     if (!input) return;
     var raw = inputNumpadBuffer || "";
-    if (input.id === "crash-auto-input") {
+    if (input.id === "crash-auto-input" || input.id === "piggy-withdraw") {
       raw = raw.replace(/[^0-9.]/g, "");
       if ((raw.match(/\./g) || []).length > 1) {
         raw = raw.slice(0, raw.lastIndexOf("."));
       }
       if (raw.indexOf(".") >= 0) {
         var parts = raw.split(".");
-        raw = parts[0] + "." + (parts[1] || "").slice(0, 1);
+        raw = parts[0] + "." + (parts[1] || "").slice(0, input.id === "piggy-withdraw" ? 2 : 1);
       }
       if (raw === "" || raw === ".") {
         input.value = "";
@@ -563,15 +644,30 @@
   function confirmSpecialInput(input) {
     if (!input) return;
     if (!input.value) {
+      if (input.id === "piggy-withdraw") {
+        settleSpecialInputValue(input, 0);
+      } else {
       settleSpecialInputValue(
         input,
         parseFloat(input.min) || (input.id === "crash-auto-input" ? 1.1 : 10),
       );
+      }
     } else if (input.id === "crash-auto-input") {
       settleSpecialInputValue(input, parseFloat(input.value));
+    } else if (input.id === "piggy-withdraw") {
+      if (input.value) settleSpecialInputValue(input, parseFloat(input.value));
+    } else if (input.id === "pomo-focus" || input.id === "pomo-break") {
+      if (input.value) settleSpecialInputValue(input, parseFloat(input.value));
+      pomoReset();
     }
     if (input.id === "rlt-bet-input") {
       rltSetFoco(4);
+    } else if (input.id === "piggy-withdraw") {
+      piggySetFoco(4);
+    } else if (input.id === "pomo-focus") {
+      pomoSetFoco(5);
+    } else if (input.id === "pomo-break") {
+      pomoSetFoco(0);
     } else {
       crashSetFoco(3);
     }
@@ -621,7 +717,7 @@
       return true;
     }
     if (/^[0-9.]$/.test(key)) {
-      if (key === "." && input.id !== "crash-auto-input") return false;
+      if (key === "." && input.id !== "crash-auto-input" && input.id !== "piggy-withdraw") return false;
       if (inputNumpadFresh) {
         inputNumpadBuffer = key === "." ? "0" : "";
         inputNumpadFresh = false;
@@ -794,8 +890,69 @@
   });
 
   var arcadeGamesIdx = 0;
+  var arcadeGamesBooted = false;
+  var arcadeGamesAnimating = false;
   function getArcadeGamesCards() {
     return Array.from(document.querySelectorAll("#arcade-games-grid .gcard"));
+  }
+  function arcadeGamesClearFoco() {
+    getArcadeGamesCards().forEach(function (c) { c.classList.remove("kb-focus"); });
+  }
+  function arcadeGamesShowEntry() {
+    var hero = document.getElementById("arcade-games-hero");
+    var panel = document.getElementById("arcade-boot-panel");
+    var grid = document.getElementById("arcade-games-grid");
+    var entryHint = document.getElementById("arcade-games-entry-hint");
+    var playHint = document.getElementById("arcade-games-play-hint");
+    var btn = document.getElementById("arcade-power-btn");
+    if (hero) hero.classList.remove("compacted");
+    if (panel) panel.classList.remove("gone", "booting");
+    if (grid) {
+      grid.classList.remove("show");
+      grid.setAttribute("aria-hidden", "true");
+    }
+    if (entryHint) entryHint.classList.add("show");
+    if (playHint) playHint.classList.remove("show");
+    if (btn) btn.classList.add("kb-focus");
+    arcadeGamesClearFoco();
+  }
+  function arcadeGamesShowGrid() {
+    var hero = document.getElementById("arcade-games-hero");
+    var panel = document.getElementById("arcade-boot-panel");
+    var grid = document.getElementById("arcade-games-grid");
+    var entryHint = document.getElementById("arcade-games-entry-hint");
+    var playHint = document.getElementById("arcade-games-play-hint");
+    var btn = document.getElementById("arcade-power-btn");
+    if (hero) hero.classList.add("compacted");
+    if (panel) panel.classList.add("gone");
+    if (grid) {
+      grid.classList.add("show");
+      grid.setAttribute("aria-hidden", "false");
+    }
+    if (entryHint) entryHint.classList.remove("show");
+    if (playHint) playHint.classList.add("show");
+    if (btn) btn.classList.remove("kb-focus");
+    arcadeGamesSetFoco(arcadeGamesIdx);
+  }
+  function arcadeGamesEnter() {
+    if (arcadeGamesBooted) arcadeGamesShowGrid();
+    else arcadeGamesShowEntry();
+  }
+  function arcadeGamesReveal() {
+    var panel = document.getElementById("arcade-boot-panel");
+    var entryHint = document.getElementById("arcade-games-entry-hint");
+    if (arcadeGamesBooted || arcadeGamesAnimating) return;
+    arcadeGamesAnimating = true;
+    arcadeGamesBooted = true;
+    somMoeda();
+    if (entryHint) entryHint.classList.remove("show");
+    if (panel) panel.classList.add("booting");
+    setTimeout(function () {
+      arcadeGamesAnimating = false;
+      if (telaAtiva !== TELA.ARCADE_GAMES || !arcadeGamesBooted) return;
+      arcadeGamesIdx = 0;
+      arcadeGamesShowGrid();
+    }, 1260);
   }
   function arcadeGamesSetFoco(idx) {
     var cards = getArcadeGamesCards();
@@ -806,6 +963,7 @@
     arcadeGamesIdx = idx;
   }
   function arcadeGamesSelect() {
+    if (!arcadeGamesBooted || arcadeGamesAnimating) return;
     var cards = getArcadeGamesCards();
     var card = cards[arcadeGamesIdx];
     if (!card) return;
@@ -816,6 +974,7 @@
     }
   }
   document.getElementById("arcade-games-grid").addEventListener("click", function (e) {
+    if (!arcadeGamesBooted || arcadeGamesAnimating) return;
     var card = e.target.closest(".gcard");
     if (!card) return;
     var goto = card.getAttribute("data-goto");
@@ -826,9 +985,16 @@
   });
   getArcadeGamesCards().forEach(function (card, index) {
     card.addEventListener("mouseenter", function () {
+      if (!arcadeGamesBooted) return;
       arcadeGamesSetFoco(index);
     });
   });
+  var arcadePowerBtn = document.getElementById("arcade-power-btn");
+  if (arcadePowerBtn) {
+    arcadePowerBtn.addEventListener("click", function () {
+      arcadeGamesReveal();
+    });
+  }
 
   /* Nav-back centralizado */
   document.addEventListener("click", function (e) {
@@ -844,6 +1010,12 @@
     } else if (id === "cyber-back") {
       cyberStop();
       irPara(TELA.ARCADE_GAMES);
+    } else if (id === "light-back" || id === "piggy-back" || id === "pomo-back" || id === "synth-back") {
+      irPara(TELA.PROJECTS);
+    } else if (id === "projects-back") {
+      projectsUnlocked = false;
+      projectsAnimating = false;
+      irPara(TELA.HUB);
     } else if (id === "casino-back") {
       irPara(TELA.HUB);
     } else if (id === "slots-back" || id === "rlt-back" || id === "crash-back") {
@@ -855,6 +1027,594 @@
       irPara(TELA.UT_HUB);
     }
   });
+
+  /* =====================================================================
+   PROJETOS WEB -- Navegação do hub avaliativo
+   ===================================================================== */
+  var projectsIdx = 0;
+  var projectsUnlocked = false;
+  var projectsAnimating = false;
+  function getProjectCards() {
+    return Array.from(document.querySelectorAll("#projects-grid .gcard"));
+  }
+  function projectsHintEntry() {
+    var hint = document.getElementById("projects-hint");
+    if (!hint) return;
+    hint.innerHTML = '<span class="key">ENTER</span> compilar &nbsp;|&nbsp; <span class="key">ESC</span> voltar';
+  }
+  function projectsHintGrid() {
+    var hint = document.getElementById("projects-hint");
+    if (!hint) return;
+    hint.innerHTML = '<span class="key">&larr;</span><span class="key">&rarr;</span> navegar &nbsp;|&nbsp; <span class="key">ENTER</span> selecionar &nbsp;|&nbsp; <span class="key">ESC</span> voltar';
+  }
+  function projectsClearFoco() {
+    getProjectCards().forEach(function (c) { c.classList.remove("kb-focus"); });
+  }
+  function projectsShowEntry() {
+    var hero = document.getElementById("projects-hero");
+    var panel = document.getElementById("projects-build-panel");
+    var grid = document.getElementById("projects-grid");
+    var btn = document.getElementById("projects-build-btn");
+    if (hero) hero.classList.remove("compacted");
+    if (panel) panel.classList.remove("gone", "compiling");
+    if (grid) {
+      grid.classList.remove("show");
+      grid.setAttribute("aria-hidden", "true");
+    }
+    if (btn) btn.classList.add("kb-focus");
+    projectsHintEntry();
+    projectsClearFoco();
+  }
+  function projectsShowGrid() {
+    var hero = document.getElementById("projects-hero");
+    var panel = document.getElementById("projects-build-panel");
+    var grid = document.getElementById("projects-grid");
+    var btn = document.getElementById("projects-build-btn");
+    if (hero) hero.classList.add("compacted");
+    if (panel) panel.classList.add("gone");
+    if (grid) {
+      grid.classList.add("show");
+      grid.setAttribute("aria-hidden", "false");
+    }
+    if (btn) btn.classList.remove("kb-focus");
+    projectsHintGrid();
+    projectsSetFoco(projectsIdx);
+  }
+  function projectsEnter() {
+    if (projectsUnlocked) projectsShowGrid();
+    else projectsShowEntry();
+  }
+  function projectsReveal() {
+    var panel = document.getElementById("projects-build-panel");
+    if (projectsUnlocked || projectsAnimating) return;
+    projectsAnimating = true;
+    projectsUnlocked = true;
+    somMoeda();
+    if (panel) panel.classList.add("compiling");
+    setTimeout(function () {
+      projectsAnimating = false;
+      if (telaAtiva !== TELA.PROJECTS || !projectsUnlocked) return;
+      projectsIdx = 0;
+      projectsShowGrid();
+    }, 1280);
+  }
+  function projectsSetFoco(idx) {
+    var cards = getProjectCards();
+    if (!cards.length) return;
+    idx = ((idx % cards.length) + cards.length) % cards.length;
+    cards.forEach(function (c) { c.classList.remove("kb-focus"); });
+    cards[idx].classList.add("kb-focus");
+    projectsIdx = idx;
+  }
+  function projectsSelect() {
+    if (!projectsUnlocked || projectsAnimating) return;
+    var card = getProjectCards()[projectsIdx];
+    if (!card) return;
+    somNav();
+    irPara(card.getAttribute("data-goto"));
+  }
+  document.getElementById("projects-grid").addEventListener("click", function (e) {
+    if (!projectsUnlocked || projectsAnimating) return;
+    var card = e.target.closest(".gcard");
+    if (!card) return;
+    somNav();
+    irPara(card.getAttribute("data-goto"));
+  });
+  getProjectCards().forEach(function (card, index) {
+    card.addEventListener("mouseenter", function () {
+      if (!projectsUnlocked) return;
+      projectsSetFoco(index);
+    });
+  });
+  var projectsBuildBtn = document.getElementById("projects-build-btn");
+  if (projectsBuildBtn) {
+    projectsBuildBtn.addEventListener("click", function () {
+      projectsReveal();
+    });
+  }
+
+  function setFocusByIds(ids, idx) {
+    if (!ids.length) return 0;
+    idx = ((idx % ids.length) + ids.length) % ids.length;
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.remove("kb-focus");
+    });
+    var active = document.getElementById(ids[idx]);
+    if (active) active.classList.add("kb-focus");
+    return idx;
+  }
+
+  function clickFocusedId(ids, idx) {
+    var el = document.getElementById(ids[idx]);
+    if (!el) return;
+    if (el.tagName === "INPUT") {
+      el.focus();
+    } else {
+      el.click();
+    }
+  }
+
+  /* =====================================================================
+   PROJETO 1 -- Controle de Luz
+   ===================================================================== */
+  var lightReady = false;
+  var lightOn = false;
+  var lightCount = 0;
+  var lightIdx = 0;
+  var lightControls = ["light-toggle"];
+  function lightInit() {
+    if (!lightReady) {
+      lightReady = true;
+      document.getElementById("light-toggle").addEventListener("click", lightToggle);
+      document.getElementById("light-toggle").addEventListener("mouseenter", function () { lightSetFoco(0); });
+    }
+    lightSetFoco(0);
+    lightRender();
+  }
+  function lightSetFoco(idx) {
+    lightIdx = setFocusByIds(lightControls, idx);
+  }
+  function lightToggle() {
+    lightOn = !lightOn;
+    if (lightOn) lightCount++;
+    lightRender();
+    bipe(lightOn ? 740 : 260, "sine", 0.12, 0.12);
+  }
+  function lightRender() {
+    var screen = document.getElementById("light-switch");
+    var off = document.getElementById("lamp-off");
+    var on = document.getElementById("lamp-on");
+    var btn = document.getElementById("light-toggle");
+    var msg = document.getElementById("light-msg");
+    var count = document.getElementById("light-count");
+    if (!screen || !off || !on || !btn) return;
+    screen.classList.toggle("light-on", lightOn);
+    off.classList.toggle("hidden", lightOn);
+    on.classList.toggle("hidden", !lightOn);
+    btn.textContent = lightOn ? "DESLIGAR" : "LIGAR";
+    if (msg) msg.textContent = lightOn ? "A lampada esta acesa." : "A lampada esta apagada.";
+    if (count) count.textContent = lightCount;
+  }
+
+  /* =====================================================================
+   PROJETO 2 -- Cofrinho Digital
+   ===================================================================== */
+  var piggyReady = false;
+  var piggyState = { total: 0, counts: { "0.10": 0, "0.25": 0, "0.50": 0, "1.00": 0 } };
+  var piggyIdx = 0;
+  var piggyAnimTimer = null;
+  var piggyDoorTimers = [];
+  var piggyBusy = false;
+  var piggyControls = [
+    "piggy-coin-010",
+    "piggy-coin-025",
+    "piggy-coin-050",
+    "piggy-coin-100",
+    "piggy-withdraw",
+    "piggy-cashout",
+    "piggy-empty",
+  ];
+  function piggyInit() {
+    if (!piggyReady) {
+      piggyReady = true;
+      try {
+        var saved = JSON.parse(localStorage.getItem("playground-piggy-bank") || "null");
+        if (saved && saved.counts) piggyState = saved;
+      } catch (e) { }
+      Array.from(document.querySelectorAll("[data-coin]")).forEach(function (btn) {
+        btn.addEventListener("click", function () { piggyAdd(btn.getAttribute("data-coin")); });
+      });
+      document.getElementById("piggy-cashout").addEventListener("click", piggyWithdraw);
+      document.getElementById("piggy-empty").addEventListener("click", piggyEmpty);
+      piggyControls.forEach(function (id, index) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("mouseenter", function () { piggySetFoco(index); });
+      });
+    }
+    piggySetFoco(0);
+    piggyRender("Adicione moedas ao cofre.");
+  }
+  function piggySetFoco(idx) {
+    piggyIdx = setFocusByIds(piggyControls, idx);
+    if (piggyControls[piggyIdx] !== "piggy-withdraw") hideInputNumpad();
+  }
+  function piggyMoney(v) {
+    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
+  }
+  function piggySave() {
+    localStorage.setItem("playground-piggy-bank", JSON.stringify(piggyState));
+  }
+  function piggyAdd(value) {
+    if (piggyBusy) return;
+    var amount = Number(value);
+    piggyState.total = Number((piggyState.total + amount).toFixed(2));
+    piggyState.counts[value]++;
+    piggySave();
+    piggyRender("Moeda de " + piggyMoney(amount) + " adicionada.");
+    piggyAnimateCoin(value, "deposit");
+    somMoeda();
+  }
+  function piggyAnimateCoin(value, mode) {
+    var visual = document.querySelector(".piggy-bank-visual");
+    var coin = document.getElementById("piggy-drop-coin");
+    if (!coin) return;
+    piggyBusy = true;
+    if (piggyAnimTimer) clearTimeout(piggyAnimTimer);
+    piggyDoorTimers.forEach(function (timer) { clearTimeout(timer); });
+    piggyDoorTimers = [];
+    coin.textContent = "$";
+    coin.className = "piggy-drop-coin";
+    coin.style.animation = "none";
+    coin.style.opacity = "0";
+    if (visual) {
+      visual.classList.remove("safe-opening", "safe-open", "safe-closing");
+      void visual.offsetWidth;
+      visual.classList.add("safe-opening");
+      piggyDoorTimers.push(setTimeout(function () {
+        visual.classList.remove("safe-opening", "safe-closing");
+        visual.classList.add("safe-open");
+      }, 220));
+      piggyDoorTimers.push(setTimeout(function () {
+        visual.classList.remove("safe-opening", "safe-open");
+        visual.classList.add("safe-closing");
+      }, 520));
+      piggyDoorTimers.push(setTimeout(function () {
+        visual.classList.remove("safe-closing");
+      }, 780));
+    }
+    void coin.offsetWidth;
+    coin.style.animation =
+      (mode === "withdraw" ? "piggyCoinOut" : "piggyCoinIn") +
+      " 0.62s cubic-bezier(0.18, 0.82, 0.32, 1) both";
+    piggyAnimTimer = setTimeout(function () {
+      coin.className = "piggy-drop-coin";
+      coin.style.animation = "none";
+      coin.style.opacity = "0";
+      piggyBusy = false;
+      piggyAnimTimer = null;
+    }, 680);
+  }
+  function piggyWithdraw() {
+    if (piggyBusy) return;
+    var input = document.getElementById("piggy-withdraw");
+    var amount = Number(input.value || 0);
+    if (amount <= 0) {
+      piggyRender("Digite um valor valido para sacar.");
+      somErro();
+      return;
+    }
+    if (amount > piggyState.total) {
+      piggyRender("Voce nao tem Saldo para o saque!!");
+      somErro();
+      return;
+    }
+    piggyState.total = Number((piggyState.total - amount).toFixed(2));
+    input.value = "";
+    piggySave();
+    piggyRender("Saque de " + piggyMoney(amount) + " realizado.");
+    piggyAnimateCoin(amount, "withdraw");
+    somOk();
+  }
+  function piggyEmpty() {
+    if (piggyBusy) return;
+    var hadMoney = piggyState.total > 0;
+    piggyState = { total: 0, counts: { "0.10": 0, "0.25": 0, "0.50": 0, "1.00": 0 } };
+    piggySave();
+    piggyRender("Cofre esvaziado.");
+    if (hadMoney) piggyBurstCoins();
+    somEsc();
+  }
+  function piggyBurstCoins() {
+    var visual = document.querySelector(".piggy-bank-visual");
+    var burst = document.getElementById("piggy-burst");
+    if (!burst) return;
+    piggyBusy = true;
+    burst.innerHTML = "";
+    if (piggyAnimTimer) clearTimeout(piggyAnimTimer);
+    piggyDoorTimers.forEach(function (timer) { clearTimeout(timer); });
+    piggyDoorTimers = [];
+    if (visual) {
+      visual.classList.remove("safe-opening", "safe-open", "safe-closing");
+      void visual.offsetWidth;
+      visual.classList.add("safe-opening");
+      piggyDoorTimers.push(setTimeout(function () {
+        visual.classList.remove("safe-opening", "safe-closing");
+        visual.classList.add("safe-open");
+      }, 220));
+      piggyDoorTimers.push(setTimeout(function () {
+        visual.classList.remove("safe-opening", "safe-open");
+        visual.classList.add("safe-closing");
+      }, 940));
+      piggyDoorTimers.push(setTimeout(function () {
+        visual.classList.remove("safe-closing");
+      }, 1200));
+    }
+    for (var i = 0; i < 12; i++) {
+      var coin = document.createElement("span");
+      coin.className = "piggy-burst-coin";
+      coin.textContent = "$";
+      coin.style.animationDelay = i * 45 + "ms";
+      coin.style.setProperty("--tx", 80 + Math.random() * 190 + "px");
+      coin.style.setProperty("--ty", -92 + Math.random() * 184 + "px");
+      coin.style.setProperty("--rot", 220 + Math.random() * 420 + "deg");
+      burst.appendChild(coin);
+    }
+    setTimeout(function () {
+      burst.innerHTML = "";
+      piggyBusy = false;
+    }, 1600);
+  }
+  function piggyRender(message) {
+    var total = document.getElementById("piggy-total");
+    var counts = document.getElementById("piggy-counts");
+    var fill = document.getElementById("piggy-fill");
+    var msg = document.getElementById("piggy-msg");
+    if (total) total.textContent = piggyMoney(piggyState.total);
+    if (counts) {
+      counts.textContent =
+        "R$0,10: " + piggyState.counts["0.10"] +
+        " | R$0,25: " + piggyState.counts["0.25"] +
+        " | R$0,50: " + piggyState.counts["0.50"] +
+        " | R$1,00: " + piggyState.counts["1.00"];
+    }
+    if (fill) fill.style.height = Math.min(100, piggyState.total * 8) + "%";
+    if (msg) msg.textContent = message;
+  }
+
+  /* =====================================================================
+   PROJETO 3 -- Pomodoro
+   ===================================================================== */
+  var pomoReady = false;
+  var pomoTimer = null;
+  var pomoMode = "focus";
+  var pomoRemaining = 25 * 60;
+  var pomoIdx = 0;
+  var pomoControls = ["pomo-start", "pomo-pause", "pomo-reset", "pomo-theme", "pomo-focus", "pomo-break"];
+  function pomoInit() {
+    if (!pomoReady) {
+      pomoReady = true;
+      document.getElementById("pomo-start").addEventListener("click", pomoStart);
+      document.getElementById("pomo-pause").addEventListener("click", pomoPause);
+      document.getElementById("pomo-reset").addEventListener("click", pomoReset);
+      document.getElementById("pomo-theme").addEventListener("click", pomoTheme);
+      document.getElementById("pomo-focus").addEventListener("change", pomoReset);
+      document.getElementById("pomo-break").addEventListener("change", pomoReset);
+      pomoControls.forEach(function (id, index) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("mouseenter", function () { pomoSetFoco(index); });
+      });
+    }
+    pomoSetFoco(0);
+    pomoRender("Configure, inicie e acompanhe a contagem regressiva.");
+  }
+  function pomoSetFoco(idx) {
+    pomoIdx = setFocusByIds(pomoControls, idx);
+    if (pomoControls[pomoIdx] !== "pomo-focus" && pomoControls[pomoIdx] !== "pomo-break") hideInputNumpad();
+  }
+  function pomoMinutes(id, fallback) {
+    var value = Number(document.getElementById(id).value || fallback);
+    return Math.max(1, Math.min(90, value));
+  }
+  function pomoDuration() {
+    return (pomoMode === "focus" ? pomoMinutes("pomo-focus", 25) : pomoMinutes("pomo-break", 5)) * 60;
+  }
+  function pomoStart() {
+    if (pomoTimer) return;
+    if (!pomoRemaining) pomoRemaining = pomoDuration();
+    pomoTimer = setInterval(function () {
+      pomoRemaining--;
+      if (pomoRemaining <= 0) {
+        pomoPause();
+        somOk();
+        pomoMode = pomoMode === "focus" ? "break" : "focus";
+        pomoRemaining = pomoDuration();
+        pomoRender(pomoMode === "focus" ? "Hora de voltar ao foco." : "Pausa iniciada.");
+        return;
+      }
+      pomoRender("Timer em andamento.");
+    }, 1000);
+    pomoRender("Timer em andamento.");
+    somNav();
+  }
+  function pomoPause() {
+    if (pomoTimer) clearInterval(pomoTimer);
+    pomoTimer = null;
+    pomoRender("Timer pausado.");
+  }
+  function pomoReset() {
+    pomoPause();
+    pomoMode = "focus";
+    pomoRemaining = pomoDuration();
+    pomoRender("Timer resetado.");
+  }
+  function pomoTheme() {
+    var screen = document.getElementById("pomodoro");
+    screen.classList.toggle("night");
+    document.getElementById("pomo-theme").textContent = screen.classList.contains("night") ? "MODO CLARO" : "MODO NOTURNO";
+    somNav();
+  }
+  function pomoRender(message) {
+    var m = Math.floor(pomoRemaining / 60);
+    var s = pomoRemaining % 60;
+    var time = document.getElementById("pomo-time");
+    var mode = document.getElementById("pomo-mode");
+    var msg = document.getElementById("pomo-msg");
+    if (time) time.textContent = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    if (mode) mode.textContent = pomoMode === "focus" ? "FOCO" : "PAUSA";
+    if (msg) msg.textContent = message;
+  }
+
+  /* =====================================================================
+   TECLADO VIRTUAL -- Sons na Web
+   ===================================================================== */
+  var synthReady = false;
+  var synthCount = 0;
+  var synthRecording = false;
+  var synthRecordStarted = 0;
+  var synthSequence = [];
+  var synthIdx = 0;
+  var synthControls = ["synth-record", "synth-play", "synth-theme"];
+  var synthNotes = {
+    do: { label: "DO", freq: 261.63, key: "a" },
+    re: { label: "RE", freq: 293.66, key: "s" },
+    mi: { label: "MI", freq: 329.63, key: "d" },
+    fa: { label: "FA", freq: 349.23, key: "f" },
+    sol: { label: "SOL", freq: 392.0, key: "g" },
+    la: { label: "LA", freq: 440.0, key: "h" },
+    si: { label: "SI", freq: 493.88, key: "j" },
+  };
+
+  function synthInit() {
+    if (synthReady) {
+      synthSetFoco(0);
+      return;
+    }
+    synthReady = true;
+    Array.from(document.querySelectorAll(".synth-key")).forEach(function (key) {
+      key.addEventListener("click", function () {
+        synthPlayNote(key.getAttribute("data-note"), true);
+      });
+    });
+    var record = document.getElementById("synth-record");
+    var play = document.getElementById("synth-play");
+    var theme = document.getElementById("synth-theme");
+    if (record) record.addEventListener("click", synthToggleRecord);
+    if (play) play.addEventListener("click", synthReplay);
+    if (theme) theme.addEventListener("click", synthToggleTheme);
+    synthControls.forEach(function (id, index) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener("mouseenter", function () { synthSetFoco(index); });
+    });
+    synthSetFoco(0);
+  }
+  function synthSetFoco(idx) {
+    synthIdx = setFocusByIds(synthControls, idx);
+  }
+
+  function synthNoteFromKey(k) {
+    k = String(k || "").toLowerCase();
+    for (var note in synthNotes) {
+      if (synthNotes[note].key === k) return note;
+    }
+    return "";
+  }
+
+  function synthPlayNote(note, shouldRecord) {
+    var data = synthNotes[note];
+    if (!data) return false;
+    var key = document.querySelector('.synth-key[data-note="' + note + '"]');
+    if (key) {
+      key.classList.add("active");
+      setTimeout(function () { key.classList.remove("active"); }, 170);
+    }
+    var now = document.getElementById("synth-now");
+    if (now) now.textContent = "ULTIMA NOTA: " + data.label + "  |  TECLA " + data.key.toUpperCase();
+    synthCount++;
+    var count = document.getElementById("synth-count");
+    if (count) count.textContent = synthCount;
+    synthTone(data.freq);
+    if (synthRecording && shouldRecord) {
+      synthSequence.push({ note: note, at: Date.now() - synthRecordStarted });
+    }
+    return true;
+  }
+
+  function synthTone(freq) {
+    try {
+      var ctx = getAudio();
+      if (!ctx) return;
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      var filter = ctx.createBiquadFilter();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(1200, ctx.currentTime);
+      gain.gain.setValueAtTime(0.001, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.42);
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.43);
+    } catch (e) { }
+  }
+
+  function synthToggleRecord() {
+    synthRecording = !synthRecording;
+    var btn = document.getElementById("synth-record");
+    if (synthRecording) {
+      synthSequence = [];
+      synthRecordStarted = Date.now();
+      if (btn) {
+        btn.classList.add("active");
+        btn.textContent = "GRAVANDO";
+      }
+      var now = document.getElementById("synth-now");
+      if (now) now.textContent = "GRAVANDO SEQUENCIA";
+      somNav();
+    } else {
+      if (btn) {
+        btn.classList.remove("active");
+        btn.textContent = "GRAVAR";
+      }
+      var saved = document.getElementById("synth-now");
+      if (saved) saved.textContent = synthSequence.length ? "SEQUENCIA SALVA" : "NENHUMA NOTA GRAVADA";
+      somOk();
+    }
+  }
+
+  function synthReplay() {
+    if (!synthSequence.length) {
+      somErro();
+      var now = document.getElementById("synth-now");
+      if (now) now.textContent = "GRAVE UMA SEQUENCIA PRIMEIRO";
+      return;
+    }
+    if (synthRecording) synthToggleRecord();
+    var play = document.getElementById("synth-play");
+    if (play) play.classList.add("active");
+    synthSequence.forEach(function (item, index) {
+      setTimeout(function () {
+        synthPlayNote(item.note, false);
+        if (index === synthSequence.length - 1 && play) play.classList.remove("active");
+      }, item.at);
+    });
+  }
+
+  function synthToggleTheme() {
+    var screen = document.getElementById("virtual-keyboard");
+    var btn = document.getElementById("synth-theme");
+    if (!screen) return;
+    screen.classList.toggle("light");
+    if (btn) btn.textContent = screen.classList.contains("light") ? "MODO ESCURO" : "MODO CLARO";
+    somNav();
+  }
 
   /* =====================================================================
    JOKENPÔ -- Navegação com teclado
@@ -1003,6 +1763,126 @@
         return;
       }
 
+      /* ── PROJETOS WEB HUB ── */
+      if (telaAtiva === TELA.PROJECTS) {
+        if (k === "Escape") {
+          somEsc();
+          projectsUnlocked = false;
+          projectsAnimating = false;
+          irPara(TELA.HUB);
+          return;
+        }
+        if (projectsAnimating) return;
+        if (!projectsUnlocked) {
+          if (k === "Enter" || k === " ") projectsReveal();
+          return;
+        }
+        if (k === "ArrowLeft") {
+          projectsSetFoco(projectsIdx - 1);
+          somNav();
+        } else if (k === "ArrowRight") {
+          projectsSetFoco(projectsIdx + 1);
+          somNav();
+        } else if (k === "Enter" || k === " ") {
+          projectsSelect();
+        }
+        return;
+      }
+
+      if (telaAtiva === TELA.LIGHT) {
+        if (k === "Escape") {
+          somEsc();
+          irPara(TELA.PROJECTS);
+          return;
+        }
+        if (k === "ArrowLeft" || k === "ArrowRight") {
+          lightSetFoco(0);
+          somNav();
+        } else if (k === "Enter" || k === " ") {
+          clickFocusedId(lightControls, lightIdx);
+        }
+        return;
+      }
+
+      if (telaAtiva === TELA.PIGGY) {
+        if (k === "Escape") {
+          somEsc();
+          irPara(TELA.PROJECTS);
+          return;
+        }
+        if (k === "ArrowLeft") {
+          piggySetFoco(piggyIdx - 1);
+          somNav();
+        } else if (k === "ArrowRight") {
+          piggySetFoco(piggyIdx + 1);
+          somNav();
+        } else if (k === "ArrowUp" || k === "ArrowDown") {
+          piggySetFoco(piggyIdx + (k === "ArrowDown" ? 1 : -1));
+          somNav();
+        } else if (k === "Enter" || k === " ") {
+          clickFocusedId(piggyControls, piggyIdx);
+        }
+        return;
+      }
+
+      if (telaAtiva === TELA.POMO) {
+        if (k === "Escape") {
+          somEsc();
+          irPara(TELA.PROJECTS);
+          return;
+        }
+        if (k === "ArrowLeft") {
+          pomoSetFoco(pomoIdx - 1);
+          somNav();
+        } else if (k === "ArrowRight") {
+          pomoSetFoco(pomoIdx + 1);
+          somNav();
+        } else if (k === "ArrowUp" || k === "ArrowDown") {
+          pomoSetFoco(pomoIdx + (k === "ArrowDown" ? 1 : -1));
+          somNav();
+        } else if (k === "Enter" || k === " ") {
+          clickFocusedId(pomoControls, pomoIdx);
+        }
+        return;
+      }
+
+      /* ── TECLADO VIRTUAL ── */
+      if (telaAtiva === TELA.KEYBOARD) {
+        if (k === "Escape") {
+          somEsc();
+          irPara(TELA.PROJECTS);
+          return;
+        }
+        if (k === "ArrowLeft") {
+          synthSetFoco(synthIdx - 1);
+          somNav();
+          return;
+        }
+        if (k === "ArrowRight") {
+          synthSetFoco(synthIdx + 1);
+          somNav();
+          return;
+        }
+        if (k === "Enter" || k === " ") {
+          clickFocusedId(synthControls, synthIdx);
+          return;
+        }
+        if (k === "r" || k === "R") {
+          synthToggleRecord();
+          return;
+        }
+        if (k === "p" || k === "P") {
+          synthReplay();
+          return;
+        }
+        if (k === "t" || k === "T") {
+          synthToggleTheme();
+          return;
+        }
+        if (synthPlayNote(synthNoteFromKey(k), true)) return;
+        return;
+      }
+
       /* ── CASINO HUB ── */
       if (telaAtiva === TELA.CASINO) {
         if (k === "Escape") {
@@ -1141,7 +2021,14 @@
       if (telaAtiva === TELA.ARCADE_GAMES) {
         if (k === "Escape") {
           somEsc();
+          arcadeGamesBooted = false;
+          arcadeGamesAnimating = false;
           irPara(TELA.HUB);
+          return;
+        }
+        if (arcadeGamesAnimating) return;
+        if (!arcadeGamesBooted) {
+          if (k === "Enter" || k === " ") arcadeGamesReveal();
           return;
         }
         if (k === "ArrowLeft") {
@@ -6087,5 +6974,25 @@
 
   initAiChat();
   utRefreshHub();
+
+  (function restaurarTelaPersistida() {
+    var saved = telaInicialPersistida;
+    if (!saved || saved === TELA.HUB || !telasPersistiveis[saved] || !document.getElementById(saved)) {
+      return;
+    }
+    if (telaAtiva === saved) {
+      if (saved === TELA.ARCADE_GAMES) setTimeout(function () { arcadeGamesEnter(); }, 60);
+      if (saved === TELA.PROJECTS) setTimeout(function () { projectsEnter(); }, 60);
+      if (saved === TELA.LIGHT) setTimeout(function () { lightInit(); }, 60);
+      if (saved === TELA.PIGGY) setTimeout(function () { piggyInit(); }, 60);
+      if (saved === TELA.POMO) setTimeout(function () { pomoInit(); }, 60);
+      if (saved === TELA.KEYBOARD) setTimeout(function () { synthInit(); }, 60);
+      if (saved === TELA.CASINO) setTimeout(function () { casinoSetFocoInicial(); }, 60);
+      return;
+    }
+    setTimeout(function () {
+      irPara(saved);
+    }, 120);
+  })();
 
 })();

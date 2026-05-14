@@ -9,11 +9,12 @@ _Projeto desenvolvido para o módulo de Lógica e Programação Web._
 
 O **Playground JS** é uma aplicação web interativa feita com HTML, CSS e JavaScript puro. O projeto funciona como um hub de minijogos com visual arcade neon, navegação por teclado e mouse, efeitos sonoros, animações em canvas e controle de estado no front-end.
 
-A tela inicial organiza a experiência em três hubs:
+A tela inicial organiza a experiência em quatro hubs:
 
 - **Clássicos:** jogos rápidos de sorte, escolha e placar.
 - **Arcade:** jogos de ação, reflexo, sobrevivência e boss fight.
 - **Cassino:** jogos com saldo fictício, apostas simuladas e verificação de idade.
+- **Projetos Web:** quatro atividades avaliativas de DOM, eventos e estado.
 
 O objetivo principal é aplicar conceitos fundamentais de desenvolvimento front-end, como manipulação do DOM, eventos, funções, objetos, arrays, condicionais, temporizadores, `requestAnimationFrame`, Canvas API e Web Audio API.
 
@@ -21,7 +22,7 @@ O objetivo principal é aplicar conceitos fundamentais de desenvolvimento front-
 
 ## Funcionalidades
 
-- Tela inicial com hubs **Clássicos**, **Arcade** e **Cassino**.
+- Tela inicial com cards para **Clássicos**, **Arcade**, **Cassino** e **Projetos Web**.
 - Cards com descrições curtas para cada hub e jogo.
 - Navegação por teclado e mouse.
 - Feedback visual de foco, seleção, vitória, derrota e estados de bloqueio.
@@ -101,6 +102,33 @@ O objetivo principal é aplicar conceitos fundamentais de desenvolvimento front-
 - É necessário sacar antes do multiplicador quebrar.
 - O jogo possui auto-saque e histórico de multiplicadores.
 
+### Projetos Web
+
+**Controle de Luz**
+
+- Interruptor digital com imagem de lampada apagada e acesa.
+- Botao com texto dinamico para ligar/desligar.
+- Troca visual com `classList.toggle`, fade e contador de vezes acesa.
+
+**Cofrinho Digital**
+
+- Botoes para adicionar R$0,10, R$0,25, R$0,50 e R$1,00.
+- Total formatado em reais, saque com validacao de saldo e botao para esvaziar.
+- Contador por moeda, preenchimento visual do cofre e persistencia em `localStorage`.
+
+**Pomodoro**
+
+- Timer regressivo de 25:00 com iniciar, pausar e resetar.
+- Alterna entre foco e pausa, com aviso sonoro ao finalizar.
+- Permite configurar tempos e alternar modo noturno.
+
+**Teclado Virtual**
+
+- Possui sete teclas musicais de **Dó** a **Si**.
+- Cada nota pode ser tocada por clique ou pelas teclas físicas `A`, `S`, `D`, `F`, `G`, `H` e `J`.
+- A tecla tocada recebe destaque visual e o painel mostra a última nota.
+- Inclui contador de toques, gravação/reprodução de sequência e alternância de modo claro/escuro.
+
 ---
 
 ## Controles
@@ -115,6 +143,8 @@ O objetivo principal é aplicar conceitos fundamentais de desenvolvimento front-
 - **F5:** recarregar a página.
 - **I:** abrir o chat de ajuda.
 - **Mouse:** clicar em cards, botões e opções.
+- **A/S/D/F/G/H/J no Teclado Virtual:** tocar as notas Dó, Ré, Mi, Fá, Sol, Lá e Si.
+- **R/P/T no Teclado Virtual:** gravar, reproduzir e alternar tema.
 
 ### Jogos Específicos
 
